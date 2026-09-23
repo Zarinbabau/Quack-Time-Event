@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))] // Garante que o GameObject sempre terá um AudioSource
 public class QTEController : MonoBehaviour
 {
     public enum QTEAction { Esquerda, Direita, Cima, Baixo, Acao }
@@ -25,14 +26,26 @@ public class QTEController : MonoBehaviour
     [SerializeField] private Sprite spriteKeyBaixo;
     [SerializeField] private Sprite spriteKeyAcao;
 
+    [Header("Áudio")]
+    [SerializeField] private AudioClip soundAcerto;
+    [SerializeField] private AudioClip soundErro;
+
     [Header("Configurações do QTE")]
     [SerializeField] private float tempoParaResponder = 2.0f; // tempo Y para acertar
     private const int TOTAL_ACERTOS_OBJETIVO = 10;
 
     private int acertosAtuais = 0;
+    public int errosAtuais =0;
     private bool jogoAtivo = false;
     private bool inputRecebido = false;
     private QTEAction acaoAtual;
+    private AudioSource audioSource;
+
+    private void Awake()
+    {
+        // Pega a referência do AudioSource anexado ao mesmo GameObject
+        audioSource = GetComponent<AudioSource>();
+    }
 
     private void Start()
     {
@@ -103,11 +116,19 @@ public class QTEController : MonoBehaviour
                 acertosAtuais++;
                 Debug.Log($"Acertou! Progresso: {acertosAtuais}/{TOTAL_ACERTOS_OBJETIVO}");
                 characterSpriteRenderer.sprite = ObterSpriteAcao(acaoAtual);
+
+                // Toca som de acerto
+                TocarSom(soundAcerto);
             }
             else
             {
                 Debug.Log("Errou ou tempo esgotado!");
                 characterSpriteRenderer.sprite = spriteTriste;
+                errosAtuais++;
+
+
+                // Toca som de erro
+                TocarSom(soundErro);
             }
 
             // Espera meio segundo antes de desativar a imagem e/ou avançar
@@ -121,6 +142,14 @@ public class QTEController : MonoBehaviour
 
             // Retorna ao Idle antes de sortear o próximo
             characterSpriteRenderer.sprite = spriteIdle;
+        }
+    }
+
+    private void TocarSom(AudioClip clip)
+    {
+        if (clip != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(clip);
         }
     }
 
