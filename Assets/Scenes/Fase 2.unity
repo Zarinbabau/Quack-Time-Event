@@ -204,7 +204,7 @@ Transform:
   m_GameObject: {fileID: 9889337}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.8524, y: 1.5233, z: 6.62011}
+  m_LocalPosition: {x: -11.85, y: 0.38, z: 6.62011}
   m_LocalScale: {x: 1.4508, y: 1.4508, z: 1.4508}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -374,7 +374,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.45705837, g: 0.4745098, b: 0.19215688, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -561,8 +561,8 @@ Transform:
   m_GameObject: {fileID: 1589661911}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.0004, y: -0, z: 6.62011}
-  m_LocalScale: {x: 1.4508, y: 1.4508, z: 1.4508}
+  m_LocalPosition: {x: 0.43, y: 0.86, z: 6.62011}
+  m_LocalScale: {x: 1.8098729, y: 1.8098729, z: 1.8098729}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -608,10 +608,10 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 1165ac498b5e7e242b1fc00b59aa04db, type: 3}
   - {fileID: 21300000, guid: 0d357fa6ccf96a74da3ae419dcd0630d, type: 3}
   - {fileID: 21300000, guid: b1ee510306a8971448437afa55c08bd0, type: 3}
-  soundCliqueProgresso: {fileID: 8300000, guid: ede08e37915c178438a081a2919f9dec, type: 3}
+  soundCliqueProgresso: {fileID: 8300000, guid: 36b3b2e86f45c6643865ecc7c6ed784e, type: 3}
   soundAcerto: {fileID: 8300000, guid: f1bbe93bf7aa205408169403edd64e4e, type: 3}
   soundErro: {fileID: 8300000, guid: ae6d3de0d584a2e4f96c4198949a2e6c, type: 3}
-  tempoParaResponder: 1
+  tempoParaResponder: 1.2
 --- !u!82 &1589661915
 AudioSource:
   m_ObjectHideFlags: 0
