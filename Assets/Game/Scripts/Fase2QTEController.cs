@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
-public class QTEControllerFase2 : MonoBehaviour
+public class Fase2QTEController : MonoBehaviour
 {
     public enum QTEAction { Esquerda, Direita, Cima, Baixo, Acao }
 

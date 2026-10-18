@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))] // Garante que o GameObject sempre terá um AudioSource
-public class QTEController : MonoBehaviour
+public class Fase1QTEController : MonoBehaviour
 {
     public enum QTEAction { Esquerda, Direita, Cima, Baixo, Acao }
 
