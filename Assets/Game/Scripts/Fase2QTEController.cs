@@ -188,10 +188,10 @@ public class Fase2QTEController : MonoBehaviour
     {
         return acao switch
         {
-            QTEAction.Esquerda => Input.GetKeyDown(KeyCode.A),
-            QTEAction.Direita  => Input.GetKeyDown(KeyCode.D),
-            QTEAction.Cima     => Input.GetKeyDown(KeyCode.W),
-            QTEAction.Baixo    => Input.GetKeyDown(KeyCode.S),
+            QTEAction.Esquerda => Input.GetKeyDown(KeyCode.LeftArrow),
+            QTEAction.Direita  => Input.GetKeyDown(KeyCode.RightArrow),
+            QTEAction.Cima     => Input.GetKeyDown(KeyCode.UpArrow),
+            QTEAction.Baixo    => Input.GetKeyDown(KeyCode.DownArrow),
             QTEAction.Acao     => Input.GetKeyDown(KeyCode.Space),
             _                  => false,
         };
@@ -199,10 +199,10 @@ public class Fase2QTEController : MonoBehaviour
 
     private bool ChecarInputIncorreto()
     {
-        if (Input.GetKeyDown(KeyCode.A) && acaoAtual != QTEAction.Esquerda) return true;
-        if (Input.GetKeyDown(KeyCode.D) && acaoAtual != QTEAction.Direita)  return true;
-        if (Input.GetKeyDown(KeyCode.W) && acaoAtual != QTEAction.Cima)     return true;
-        if (Input.GetKeyDown(KeyCode.S) && acaoAtual != QTEAction.Baixo)    return true;
+        if (Input.GetKeyDown(KeyCode.LeftArrow) && acaoAtual != QTEAction.Esquerda) return true;
+        if (Input.GetKeyDown(KeyCode.RightArrow) && acaoAtual != QTEAction.Direita)  return true;
+        if (Input.GetKeyDown(KeyCode.UpArrow) && acaoAtual != QTEAction.Cima)     return true;
+        if (Input.GetKeyDown(KeyCode.DownArrow) && acaoAtual != QTEAction.Baixo)    return true;
         if (Input.GetKeyDown(KeyCode.Space) && acaoAtual != QTEAction.Acao) return true;
 
         return false;
