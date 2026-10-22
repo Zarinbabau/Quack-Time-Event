@@ -878,7 +878,7 @@ MonoBehaviour:
   soundCliqueProgresso: {fileID: 8300000, guid: 36b3b2e86f45c6643865ecc7c6ed784e, type: 3}
   soundAcerto: {fileID: 8300000, guid: f1bbe93bf7aa205408169403edd64e4e, type: 3}
   soundErro: {fileID: 8300000, guid: ae6d3de0d584a2e4f96c4198949a2e6c, type: 3}
-  tempoParaResponder: 1.5
+  tempoParaResponder: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

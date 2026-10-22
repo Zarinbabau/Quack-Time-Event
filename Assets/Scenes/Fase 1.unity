@@ -307,7 +307,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GerenciadorDeErros
   textoDeErros: {fileID: 372011919}
-  QTEController: {fileID: 951493412}
+  Fase1QTEController: {fileID: 0}
 --- !u!114 &372011919
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -705,7 +705,7 @@ MonoBehaviour:
   spriteKeyAcao: {fileID: 21300000, guid: 95687298371cf7841a222730b90049ec, type: 3}
   soundAcerto: {fileID: 8300000, guid: f1bbe93bf7aa205408169403edd64e4e, type: 3}
   soundErro: {fileID: 8300000, guid: ae6d3de0d584a2e4f96c4198949a2e6c, type: 3}
-  tempoParaResponder: 0.5
+  tempoParaResponder: 0.7
   errosAtuais: 0
 --- !u!82 &951493413
 AudioSource:
