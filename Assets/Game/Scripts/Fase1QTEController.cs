@@ -41,12 +41,13 @@ public class Fase1QTEController : MonoBehaviour
     private QTEAction acaoAtual;
     private AudioSource audioSource;
 
+   private ScoreManager scoreManager;
+
     private void Awake()
     {
-        // Pega a referência do AudioSource anexado ao mesmo GameObject
         audioSource = GetComponent<AudioSource>();
+        scoreManager = GetComponent<ScoreManager>(); // Pega a referência
     }
-
     private void Start()
     {
         IniciarJogo();
@@ -114,10 +115,11 @@ public class Fase1QTEController : MonoBehaviour
             if (acertou && inputRecebido)
             {
                 acertosAtuais++;
-                Debug.Log($"Acertou! Progresso: {acertosAtuais}/{TOTAL_ACERTOS_OBJETIVO}");
+                
+                // Adiciona os pontos enviando o tempo que o jogador gastou e o tempo limite Y
+                scoreManager.AdicionarPontos(tempoDecorrido, tempoParaResponder);
+                
                 characterSpriteRenderer.sprite = ObterSpriteAcao(acaoAtual);
-
-                // Toca som de acerto
                 TocarSom(soundAcerto);
             }
             else
@@ -208,6 +210,6 @@ public class Fase1QTEController : MonoBehaviour
         jogoAtivo = false;
         keySpriteRenderer.sprite = null;
         characterSpriteRenderer.sprite = spriteIdle;
-        Debug.Log("Parabéns! Você completou os 10 acertos da fase!");
+        scoreManager.FinalizarFaseECalcularEstrelas();
     }
 }

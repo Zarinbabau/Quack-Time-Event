@@ -50,9 +50,12 @@ public class Fase2QTEController : MonoBehaviour
     private QTEAction acaoAtual;
     private AudioSource audioSource;
 
+    private ScoreManager scoreManager;
+
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
+        scoreManager = GetComponent<ScoreManager>(); // Pega a referência
     }
 
     private void Start()
@@ -129,7 +132,7 @@ public class Fase2QTEController : MonoBehaviour
             if (!errou && toquesConcluidos >= REPETICOES_NECESSARIAS)
             {
                 acertosAtuais++;
-                Debug.Log($"Evento Concluído! Progresso da Fase: {acertosAtuais}/{TOTAL_ACERTOS_OBJETIVO}");
+                scoreManager.AdicionarPontos(tempoDecorrido, tempoParaResponder);
                 
                 characterSpriteRenderer.sprite = ObterSpriteAcao(acaoAtual);
                 TocarSom(soundAcerto);
@@ -221,6 +224,6 @@ public class Fase2QTEController : MonoBehaviour
         jogoAtivo = false;
         keySpriteRenderer.sprite = null;
         characterSpriteRenderer.sprite = spriteIdle;
-        Debug.Log("Parabéns! Você concluiu a Fase 2!");
+        scoreManager.FinalizarFaseECalcularEstrelas();
     }
 }

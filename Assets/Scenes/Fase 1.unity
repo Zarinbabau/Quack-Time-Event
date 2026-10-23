@@ -596,6 +596,7 @@ GameObject:
   - component: {fileID: 951493410}
   - component: {fileID: 951493412}
   - component: {fileID: 951493413}
+  - component: {fileID: 951493414}
   m_Layer: 0
   m_Name: Pintim_Piu
   m_TagString: Untagged
@@ -804,6 +805,23 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &951493414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 951493409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac54df4281634bb4587ddf2c9686615d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScoreManager
+  idFase: Fase 1
+  pontosBase: 100
+  pontosPara1Estrela: 1000
+  pontosPara2Estrelas: 1500
+  pontosPara3Estrelas: 1800
 --- !u!1 &1090242691
 GameObject:
   m_ObjectHideFlags: 0
@@ -822,7 +840,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1090242692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1045,7 +1063,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2011800870
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -44,9 +44,12 @@ public class Fase3QTEController : MonoBehaviour
     private QTEAction[] sequenciaAtual = new QTEAction[TAMANHO_SEQUENCIA];
     private AudioSource audioSource;
 
+    private ScoreManager scoreManager;
+
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
+        scoreManager = GetComponent<ScoreManager>(); // Pega a referência
     }
 
     private void Start()
@@ -124,7 +127,7 @@ public class Fase3QTEController : MonoBehaviour
             if (!errou && indicePassoAtual >= TAMANHO_SEQUENCIA)
             {
                 acertosAtuais++;
-                Debug.Log($"Sequência concluída! Progresso: {acertosAtuais}/{TOTAL_ACERTOS_OBJETIVO}");
+                scoreManager.AdicionarPontos(tempoDecorrido, tempoParaResponder);
 
                 characterSpriteRenderer.sprite = ObterSpriteAcao(sequenciaAtual[TAMANHO_SEQUENCIA - 1]);
                 TocarSom(soundAcerto);
@@ -271,6 +274,6 @@ public class Fase3QTEController : MonoBehaviour
         jogoAtivo = false;
         LimparSpritesTeclas();
         characterSpriteRenderer.sprite = spriteIdle;
-        Debug.Log("Parabéns! Você concluiu a Fase 3!");
+        scoreManager.FinalizarFaseECalcularEstrelas();
     }
 }

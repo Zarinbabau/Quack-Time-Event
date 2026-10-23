@@ -486,6 +486,7 @@ GameObject:
   - component: {fileID: 1589661912}
   - component: {fileID: 1589661915}
   - component: {fileID: 1589661914}
+  - component: {fileID: 1589661916}
   m_Layer: 0
   m_Name: PintimPiu
   m_TagString: Untagged
@@ -709,6 +710,23 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1589661916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1589661911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac54df4281634bb4587ddf2c9686615d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScoreManager
+  idFase: Fase 2
+  pontosBase: 100
+  pontosPara1Estrela: 1000
+  pontosPara2Estrelas: 1500
+  pontosPara3Estrelas: 1800
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

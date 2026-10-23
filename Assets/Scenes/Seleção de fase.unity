@@ -926,11 +926,6 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
---- !u!4 &839970741 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2776114722738066653, guid: 82d995d50613ffe4b831ec4c7a913dba, type: 3}
-  m_PrefabInstance: {fileID: 1758643215}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &861035667
 GameObject:
   m_ObjectHideFlags: 0
@@ -1093,7 +1088,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6588460906206502662, guid: 82d995d50613ffe4b831ec4c7a913dba, type: 3}
       propertyPath: m_Name
-      value: Foto (2)
+      value: Foto 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1839,11 +1834,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b8a4a5c3a6effb449d3bccf2e8adffa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelSelectionMenu
-  fotos:
-  - {fileID: 1416589989}
-  - {fileID: 1740186440}
-  - {fileID: 1534529167}
-  - {fileID: 839970741}
+  fases:
+  - idFase: Fase 1
+    fotoTransform: {fileID: 1416589989}
+    iconesEstrelas: []
+  - idFase: Fase 2
+    fotoTransform: {fileID: 1740186440}
+    iconesEstrelas: []
+  - idFase: Fase 3
+    fotoTransform: {fileID: 1534529167}
+    iconesEstrelas: []
   mainCamera: {fileID: 1170145835}
   zoomOffsetZ: -0.5
   velocidadeZoom: 1.5
@@ -2041,7 +2041,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6588460906206502662, guid: 82d995d50613ffe4b831ec4c7a913dba, type: 3}
       propertyPath: m_Name
-      value: Foto (1)
+      value: Foto 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2103,7 +2103,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6588460906206502662, guid: 82d995d50613ffe4b831ec4c7a913dba, type: 3}
       propertyPath: m_Name
-      value: Foto (3)
+      value: Foto 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2386,7 +2386,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6588460906206502662, guid: 82d995d50613ffe4b831ec4c7a913dba, type: 3}
       propertyPath: m_Name
-      value: Foto
+      value: Foto 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
