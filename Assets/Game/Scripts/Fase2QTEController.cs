@@ -36,26 +36,28 @@ public class Fase2QTEController : MonoBehaviour
     [SerializeField] private Sprite[] keySpritesAcao = new Sprite[3];
 
     [Header("Áudio")]
-    [SerializeField] private AudioClip soundCliqueProgresso; // Opcional: som leve ao acertar 1 toque
-    [SerializeField] private AudioClip soundAcerto;          // Som ao completar os 3 toques
-    [SerializeField] private AudioClip soundErro;            // Som de erro/tempo esgotado
+    [SerializeField] private AudioClip soundCliqueProgresso;
+    [SerializeField] private AudioClip soundAcerto;
+    [SerializeField] private AudioClip soundErro;
 
     [Header("Configurações da Fase 2")]
-    [SerializeField] private float tempoParaResponder = 3.0f; // Tempo total para dar os 3 toques
+    [SerializeField] private float tempoParaResponder = 3.0f;
     private const int REPETICOES_NECESSARIAS = 3;
-    private const int TOTAL_ACERTOS_OBJETIVO = 10;
+    private const int TOTAL_ACERTOS_OBJETIVO = 25;
 
     private int acertosAtuais = 0;
+    public int errosAtuais = 0;
     private bool jogoAtivo = false;
     private QTEAction acaoAtual;
     private AudioSource audioSource;
+    private int errosSeguidos = 0; 
 
     private ScoreManager scoreManager;
 
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
-        scoreManager = GetComponent<ScoreManager>(); // Pega a referência
+        scoreManager = GetComponent<ScoreManager>();
     }
 
     private void Start()
@@ -73,6 +75,8 @@ public class Fase2QTEController : MonoBehaviour
         characterSpriteRenderer.sprite = spriteIdle;
         keySpriteRenderer.sprite = null;
         acertosAtuais = 0;
+        errosAtuais = 0;
+        errosSeguidos = 0;
         jogoAtivo = false;
 
         Debug.Log("Iniciando Fase 2 em 3 segundos...");
@@ -87,8 +91,6 @@ public class Fase2QTEController : MonoBehaviour
         while (jogoAtivo && acertosAtuais < TOTAL_ACERTOS_OBJETIVO)
         {
             characterSpriteRenderer.sprite = spriteIdle;
-
-            // Sortear a ação da rodada
             acaoAtual = (QTEAction)Random.Range(0, 5);
 
             int toquesConcluidos = 0;
@@ -97,26 +99,22 @@ public class Fase2QTEController : MonoBehaviour
             float tempoDecorrido = 0f;
             bool errou = false;
 
-            // Loop de tempo limite para realizar os 3 toques
             while (tempoDecorrido < tempoParaResponder && toquesConcluidos < REPETICOES_NECESSARIAS)
             {
                 tempoDecorrido += Time.deltaTime;
 
-                // Checa se apertou a tecla incorreta
                 if (ChecarInputIncorreto())
                 {
                     errou = true;
                     break;
                 }
-
-                // Checa se apertou a tecla correta
+                
                 if (ChecarInputCorreto(acaoAtual))
                 {
                     toquesConcluidos++;
 
                     if (toquesConcluidos < REPETICOES_NECESSARIAS)
                     {
-                        // Atualiza o sprite para o próximo estágio
                         AtualizarSpriteTecla(acaoAtual, toquesConcluidos);
                         TocarSom(soundCliqueProgresso != null ? soundCliqueProgresso : soundAcerto);
                     }
@@ -125,15 +123,13 @@ public class Fase2QTEController : MonoBehaviour
                 yield return null;
             }
 
-            // Oculta a indicação da tecla
             keySpriteRenderer.sprite = null;
 
-            // Verificação de sucesso ou falha no evento
             if (!errou && toquesConcluidos >= REPETICOES_NECESSARIAS)
             {
                 acertosAtuais++;
+                errosSeguidos = 0; 
                 scoreManager.AdicionarPontos(tempoDecorrido, tempoParaResponder);
-                
                 characterSpriteRenderer.sprite = ObterSpriteAcao(acaoAtual);
                 TocarSom(soundAcerto);
             }
@@ -142,9 +138,19 @@ public class Fase2QTEController : MonoBehaviour
                 Debug.Log("Errou ou tempo esgotado!");
                 characterSpriteRenderer.sprite = spriteTriste;
                 TocarSom(soundErro);
+
+                errosAtuais++;
+                errosSeguidos++;
+                scoreManager.RemoverPontos(tempoDecorrido, tempoParaResponder);
+
+                if (errosSeguidos >= 3)
+                {
+                    yield return new WaitForSeconds(0.5f);
+                    Game_Over();
+                    yield break; 
+                }
             }
 
-            // Espera meio segundo com o feedback visual na tela
             yield return new WaitForSeconds(0.7f);
 
             if (acertosAtuais >= TOTAL_ACERTOS_OBJETIVO)
@@ -153,51 +159,49 @@ public class Fase2QTEController : MonoBehaviour
                 yield break;
             }
 
-            // Retorna para Idle antes do próximo sorteio
             characterSpriteRenderer.sprite = spriteIdle;
         }
-    }
+    } // <- A CHAVE QUE ESTAVA FALTANDO/CAUSANDO O ERRO ESTÁ AQUI
 
     private void AtualizarSpriteTecla(QTEAction acao, int estagio)
     {
-        // Limita o índice entre 0 e 2
         int index = Mathf.Clamp(estagio, 0, 2);
 
-        keySpriteRenderer.sprite = acao switch
+        switch (acao)
         {
-            QTEAction.Esquerda => keySpritesEsquerda[index],
-            QTEAction.Direita  => keySpritesDireita[index],
-            QTEAction.Cima     => keySpritesCima[index],
-            QTEAction.Baixo    => keySpritesBaixo[index],
-            QTEAction.Acao     => keySpritesAcao[index],
-            _                  => null,
-        };
+            case QTEAction.Esquerda: keySpriteRenderer.sprite = keySpritesEsquerda[index]; break;
+            case QTEAction.Direita:  keySpriteRenderer.sprite = keySpritesDireita[index];  break;
+            case QTEAction.Cima:     keySpriteRenderer.sprite = keySpritesCima[index];     break;
+            case QTEAction.Baixo:    keySpriteRenderer.sprite = keySpritesBaixo[index];    break;
+            case QTEAction.Acao:     keySpriteRenderer.sprite = keySpritesAcao[index];     break;
+            default:                 keySpriteRenderer.sprite = null;                      break;
+        }
     }
 
     private Sprite ObterSpriteAcao(QTEAction acao)
     {
-        return acao switch
+        switch (acao)
         {
-            QTEAction.Esquerda => spriteEsquerda,
-            QTEAction.Direita  => spriteDireita,
-            QTEAction.Cima     => spriteCima,
-            QTEAction.Baixo    => spriteBaixo,
-            QTEAction.Acao     => spriteAcao,
-            _                  => spriteIdle,
-        };
+            case QTEAction.Esquerda: return spriteEsquerda;
+            case QTEAction.Direita:  return spriteDireita;
+            case QTEAction.Cima:     return spriteCima;
+            case QTEAction.Baixo:    return spriteBaixo;
+            case QTEAction.Acao:     return spriteAcao;
+            default:                 return spriteIdle;
+        }
     }
 
     private bool ChecarInputCorreto(QTEAction acao)
     {
-        return acao switch
+        switch (acao)
         {
-            QTEAction.Esquerda => Input.GetKeyDown(KeyCode.LeftArrow),
-            QTEAction.Direita  => Input.GetKeyDown(KeyCode.RightArrow),
-            QTEAction.Cima     => Input.GetKeyDown(KeyCode.UpArrow),
-            QTEAction.Baixo    => Input.GetKeyDown(KeyCode.DownArrow),
-            QTEAction.Acao     => Input.GetKeyDown(KeyCode.Space),
-            _                  => false,
-        };
+            case QTEAction.Esquerda: return Input.GetKeyDown(KeyCode.LeftArrow);
+            case QTEAction.Direita:  return Input.GetKeyDown(KeyCode.RightArrow);
+            case QTEAction.Cima:     return Input.GetKeyDown(KeyCode.UpArrow);
+            case QTEAction.Baixo:    return Input.GetKeyDown(KeyCode.DownArrow);
+            case QTEAction.Acao:     return Input.GetKeyDown(KeyCode.Space);
+            default:                 return false;
+        }
     }
 
     private bool ChecarInputIncorreto()
@@ -225,5 +229,14 @@ public class Fase2QTEController : MonoBehaviour
         keySpriteRenderer.sprite = null;
         characterSpriteRenderer.sprite = spriteIdle;
         scoreManager.FinalizarFaseECalcularEstrelas();
+    }
+
+    public void Game_Over()
+    {
+        jogoAtivo = false;
+        keySpriteRenderer.sprite = null;
+        characterSpriteRenderer.sprite = spriteTriste;
+        
+        Debug.Log("GAME OVER! Você errou 3 vezes seguidas.");
     }
 }

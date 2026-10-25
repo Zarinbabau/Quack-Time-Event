@@ -936,6 +936,16 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3419248750641685825, guid: 82d995d50613ffe4b831ec4c7a913dba, type: 3}
   m_PrefabInstance: {fileID: 950189540}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &783187331 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5090310244478618704, guid: 82d995d50613ffe4b831ec4c7a913dba, type: 3}
+  m_PrefabInstance: {fileID: 1758643215}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &793892438 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3419248750641685825, guid: 82d995d50613ffe4b831ec4c7a913dba, type: 3}
+  m_PrefabInstance: {fileID: 1758643215}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &861035667
 GameObject:
   m_ObjectHideFlags: 0
@@ -1708,6 +1718,11 @@ Transform:
   - {fileID: 861035668}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1247851697 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4545209043613393131, guid: 82d995d50613ffe4b831ec4c7a913dba, type: 3}
+  m_PrefabInstance: {fileID: 1758643215}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1322698065
 GameObject:
   m_ObjectHideFlags: 0
@@ -1855,24 +1870,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelSelectionMenu
   fases:
-  - idFase: Fase 1
+  - idFase: Fase1
+    nomeDaCena: Fase 1
     fotoTransform: {fileID: 1416589989}
     iconesEstrelas:
     - {fileID: 1690358761}
     - {fileID: 1112314865}
     - {fileID: 1736870065}
-  - idFase: Fase 2
+  - idFase: Fase2
+    nomeDaCena: Fase 2
     fotoTransform: {fileID: 1740186440}
     iconesEstrelas:
     - {fileID: 1823029448}
     - {fileID: 2033213153}
     - {fileID: 1071602678}
-  - idFase: Fase 3
+  - idFase: Fase3
+    nomeDaCena: Fase 3
     fotoTransform: {fileID: 1534529167}
     iconesEstrelas:
     - {fileID: 2125927367}
     - {fileID: 687174921}
     - {fileID: 767801910}
+  - idFase: Fase4
+    nomeDaCena: Fase 4
+    fotoTransform: {fileID: 1722056114}
+    iconesEstrelas:
+    - {fileID: 1247851697}
+    - {fileID: 783187331}
+    - {fileID: 793892438}
   mainCamera: {fileID: 1170145835}
   zoomOffsetZ: -0.5
   velocidadeZoom: 1.5
@@ -2013,6 +2038,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!4 &1722056114 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2776114722738066653, guid: 82d995d50613ffe4b831ec4c7a913dba, type: 3}
+  m_PrefabInstance: {fileID: 1758643215}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1736870065 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3419248750641685825, guid: 82d995d50613ffe4b831ec4c7a913dba, type: 3}

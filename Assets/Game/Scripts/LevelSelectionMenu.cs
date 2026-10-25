@@ -1,12 +1,15 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement; // Necessário para trocar de cena
 
-// Essa classe agrupa as informações de cada fase no Inspector
 [System.Serializable]
 public class DadosFaseMenu
 {
-    [Tooltip("O mesmo ID usado no ScoreManager (Ex: Fase1, Fase2)")]
+    [Tooltip("O mesmo ID usado no ScoreManager para salvar (Ex: Fase1)")]
     public string idFase;
+    
+    [Tooltip("O nome exato da Cena desta fase na Unity (Ex: Cena_Fase1)")]
+    public string nomeDaCena;
     
     [Tooltip("O GameObject da foto no quadro")]
     public Transform fotoTransform;
@@ -41,14 +44,12 @@ public class LevelSelectionMenu : MonoBehaviour
     {
         foreach (var fase in fases)
         {
-            // Busca o valor salvo, retornando 0 caso a fase ainda não tenha sido jogada
             int estrelasGanhas = PlayerPrefs.GetInt(fase.idFase + "_Estrelas", 0);
 
             for (int i = 0; i < 3; i++)
             {
                 if (fase.iconesEstrelas[i] != null)
                 {
-                    // Ativa a estrela apenas se o índice dela for menor que o número de estrelas ganhas
                     fase.iconesEstrelas[i].SetActive(i < estrelasGanhas);
                 }
             }
@@ -100,21 +101,41 @@ public class LevelSelectionMenu : MonoBehaviour
 
     private void ConfirmarFase()
     {
-        // Bloqueio da Fase Extra (Assumindo que seja a 4ª fase no array, índice 3)
-        if (currentIndex == 3) 
+        // Regras de Desbloqueio Baseadas no Índice Atual
+        
+        if (currentIndex == 1) // Fase 2
         {
-            int estrelasFase1 = PlayerPrefs.GetInt("Fase1_Estrelas", 0);
-            int estrelasFase2 = PlayerPrefs.GetInt("Fase2_Estrelas", 0);
-            int estrelasFase3 = PlayerPrefs.GetInt("Fase3_Estrelas", 0);
+            // Verifica se a Fase 1 (índice 0) tem pelo menos 1 estrela
+            if (PlayerPrefs.GetInt(fases[0].idFase + "_Estrelas", 0) < 1)
+            {
+                Debug.Log("Fase 2 Bloqueada! Complete a Fase 1 com pelo menos 1 estrela.");
+                return; // Impede o carregamento
+            }
+        }
+        else if (currentIndex == 2) // Fase 3
+        {
+            // Verifica se a Fase 2 (índice 1) tem pelo menos 1 estrela
+            if (PlayerPrefs.GetInt(fases[1].idFase + "_Estrelas", 0) < 1)
+            {
+                Debug.Log("Fase 3 Bloqueada! Complete a Fase 2 com pelo menos 1 estrela.");
+                return;
+            }
+        }
+        else if (currentIndex == 3) // Fase Extra (Fase 4)
+        {
+            // Fase extra exige 3 estrelas nas fases 1, 2 e 3
+            int estrelasFase1 = PlayerPrefs.GetInt(fases[0].idFase + "_Estrelas", 0);
+            int estrelasFase2 = PlayerPrefs.GetInt(fases[1].idFase + "_Estrelas", 0);
+            int estrelasFase3 = PlayerPrefs.GetInt(fases[2].idFase + "_Estrelas", 0);
 
             if (estrelasFase1 < 3 || estrelasFase2 < 3 || estrelasFase3 < 3)
             {
-                Debug.Log("Você precisa de 3 estrelas nas 3 primeiras fases para liberar a Fase Extra!");
-                // Opcional: Ative um painel de aviso na UI aqui
+                Debug.Log("Fase Extra Bloqueada! Você precisa de 3 estrelas nas 3 primeiras fases.");
                 return; 
             }
         }
 
+        // Se passou pelos bloqueios, inicia a transição
         inputsBloqueados = true;
         StartCoroutine(ZoomCameraRotina());
     }
@@ -134,7 +155,8 @@ public class LevelSelectionMenu : MonoBehaviour
             yield return null;
         }
 
-        Debug.Log("Carregando cena da fase: " + fases[currentIndex].idFase);
-        // UnityEngine.SceneManagement.SceneManager.LoadScene(fases[currentIndex].idFase);
+        // Carrega a cena real usando o novo campo 'nomeDaCena'
+        Debug.Log("Carregando cena: " + fases[currentIndex].nomeDaCena);
+        SceneManager.LoadScene(fases[currentIndex].nomeDaCena);
     }
 }

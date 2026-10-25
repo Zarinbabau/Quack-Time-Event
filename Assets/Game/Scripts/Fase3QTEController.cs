@@ -37,12 +37,14 @@ public class Fase3QTEController : MonoBehaviour
     [Header("Configurações da Fase 3")]
     [SerializeField] private float tempoParaResponder = 4.0f; // Tempo total para toda a sequência
     private const int TAMANHO_SEQUENCIA = 3;
-    private const int TOTAL_ACERTOS_OBJETIVO = 10;
+    private const int TOTAL_ACERTOS_OBJETIVO = 25;
 
     private int acertosAtuais = 0;
+    public int errosAtuais = 0; // Adicionado para manter o padrão
     private bool jogoAtivo = false;
     private QTEAction[] sequenciaAtual = new QTEAction[TAMANHO_SEQUENCIA];
     private AudioSource audioSource;
+    private int errosSeguidos = 0; // Controla o Game Over
 
     private ScoreManager scoreManager;
 
@@ -67,6 +69,8 @@ public class Fase3QTEController : MonoBehaviour
         characterSpriteRenderer.sprite = spriteIdle;
         LimparSpritesTeclas();
         acertosAtuais = 0;
+        errosAtuais = 0;
+        errosSeguidos = 0; // Garante que comece zerado
         jogoAtivo = false;
 
         Debug.Log("Iniciando Fase 3 em 3 segundos...");
@@ -112,7 +116,7 @@ public class Fase3QTEController : MonoBehaviour
 
                     if (indicePassoAtual < TAMANHO_SEQUENCIA)
                     {
-                        // Atualiza qual tecla está ativa no momento (as já acertadas ficam apagadas)
+                        // Atualiza qual tecla está ativa no momento
                         AtualizarDestaqueTeclas(indicePassoAtual);
                         TocarSom(soundCliqueProgresso != null ? soundCliqueProgresso : soundAcerto);
                     }
@@ -127,6 +131,8 @@ public class Fase3QTEController : MonoBehaviour
             if (!errou && indicePassoAtual >= TAMANHO_SEQUENCIA)
             {
                 acertosAtuais++;
+                errosSeguidos = 0; // Zera o combo de erros
+
                 scoreManager.AdicionarPontos(tempoDecorrido, tempoParaResponder);
 
                 characterSpriteRenderer.sprite = ObterSpriteAcao(sequenciaAtual[TAMANHO_SEQUENCIA - 1]);
@@ -137,6 +143,18 @@ public class Fase3QTEController : MonoBehaviour
                 Debug.Log("Errou a sequência ou o tempo esgotou!");
                 characterSpriteRenderer.sprite = spriteTriste;
                 TocarSom(soundErro);
+
+                errosAtuais++;
+                errosSeguidos++; // Soma 1 no combo de erros
+                
+                scoreManager.RemoverPontos(tempoDecorrido, tempoParaResponder);
+
+                if (errosSeguidos >= 3)
+                {
+                    yield return new WaitForSeconds(0.5f); // Espera para mostrar o feedback triste
+                    Game_Over();
+                    yield break; // Interrompe a fase
+                }
             }
 
             // Espera meio segundo antes de voltar ao Idle
@@ -187,7 +205,7 @@ public class Fase3QTEController : MonoBehaviour
             }
             else if (i == indiceAtual)
             {
-                // Tecla que DEVE ser apertada agora: opacidade e brilho total
+                // Tecla que DEVE ser apertada agora: opacidade total
                 cor.a = 1.0f;
             }
             else
@@ -213,41 +231,41 @@ public class Fase3QTEController : MonoBehaviour
 
     private Sprite ObterSpriteTecla(QTEAction acao)
     {
-        return acao switch
+        switch (acao)
         {
-            QTEAction.Esquerda => spriteKeyEsquerda,
-            QTEAction.Direita  => spriteKeyDireita,
-            QTEAction.Cima     => spriteKeyCima,
-            QTEAction.Baixo    => spriteKeyBaixo,
-            QTEAction.Acao     => spriteKeyAcao,
-            _                  => null,
-        };
+            case QTEAction.Esquerda: return spriteKeyEsquerda;
+            case QTEAction.Direita:  return spriteKeyDireita;
+            case QTEAction.Cima:     return spriteKeyCima;
+            case QTEAction.Baixo:    return spriteKeyBaixo;
+            case QTEAction.Acao:     return spriteKeyAcao;
+            default:                 return null;
+        }
     }
 
     private Sprite ObterSpriteAcao(QTEAction acao)
     {
-        return acao switch
+        switch (acao)
         {
-            QTEAction.Esquerda => spriteEsquerda,
-            QTEAction.Direita  => spriteDireita,
-            QTEAction.Cima     => spriteCima,
-            QTEAction.Baixo    => spriteBaixo,
-            QTEAction.Acao     => spriteAcao,
-            _                  => spriteIdle,
-        };
+            case QTEAction.Esquerda: return spriteEsquerda;
+            case QTEAction.Direita:  return spriteDireita;
+            case QTEAction.Cima:     return spriteCima;
+            case QTEAction.Baixo:    return spriteBaixo;
+            case QTEAction.Acao:     return spriteAcao;
+            default:                 return spriteIdle;
+        }
     }
 
     private bool ChecarInputCorreto(QTEAction acao)
     {
-        return acao switch
+        switch (acao)
         {
-            QTEAction.Esquerda => Input.GetKeyDown(KeyCode.LeftArrow),
-            QTEAction.Direita  => Input.GetKeyDown(KeyCode.RightArrow),
-            QTEAction.Cima     => Input.GetKeyDown(KeyCode.UpArrow),
-            QTEAction.Baixo    => Input.GetKeyDown(KeyCode.DownArrow),
-            QTEAction.Acao     => Input.GetKeyDown(KeyCode.Space),
-            _                  => false,
-        };
+            case QTEAction.Esquerda: return Input.GetKeyDown(KeyCode.LeftArrow);
+            case QTEAction.Direita:  return Input.GetKeyDown(KeyCode.RightArrow);
+            case QTEAction.Cima:     return Input.GetKeyDown(KeyCode.UpArrow);
+            case QTEAction.Baixo:    return Input.GetKeyDown(KeyCode.DownArrow);
+            case QTEAction.Acao:     return Input.GetKeyDown(KeyCode.Space);
+            default:                 return false;
+        }
     }
 
     private bool ChecarInputIncorreto(QTEAction acaoEsperada)
@@ -275,5 +293,14 @@ public class Fase3QTEController : MonoBehaviour
         LimparSpritesTeclas();
         characterSpriteRenderer.sprite = spriteIdle;
         scoreManager.FinalizarFaseECalcularEstrelas();
+    }
+
+    public void Game_Over()
+    {
+        jogoAtivo = false;
+        LimparSpritesTeclas();
+        characterSpriteRenderer.sprite = spriteTriste;
+        
+        Debug.Log("GAME OVER! Você errou 3 vezes seguidas.");
     }
 }

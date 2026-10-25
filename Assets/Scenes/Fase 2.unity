@@ -613,6 +613,7 @@ MonoBehaviour:
   soundAcerto: {fileID: 8300000, guid: f1bbe93bf7aa205408169403edd64e4e, type: 3}
   soundErro: {fileID: 8300000, guid: ae6d3de0d584a2e4f96c4198949a2e6c, type: 3}
   tempoParaResponder: 1.2
+  errosAtuais: 0
 --- !u!82 &1589661915
 AudioSource:
   m_ObjectHideFlags: 0
@@ -722,11 +723,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac54df4281634bb4587ddf2c9686615d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScoreManager
-  idFase: Fase 2
+  idFase: Fase2
   pontosBase: 100
-  pontosPara1Estrela: 1000
-  pontosPara2Estrelas: 1500
-  pontosPara3Estrelas: 1800
+  pontosPara1Estrela: 2500
+  pontosPara2Estrelas: 3100
+  pontosPara3Estrelas: 3700
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

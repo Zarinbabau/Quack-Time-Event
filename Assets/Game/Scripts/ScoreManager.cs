@@ -43,7 +43,7 @@ public class ScoreManager : MonoBehaviour
         Debug.Log($"[ERRO] Tempo: {tempoGasto:F2}s | Mult: {multiplicador:F2}x | Perdeu: {pontosPerdidos} | Total: {pontuacaoTotal}");
     }
 
-    public void FinalizarFaseECalcularEstrelas()
+   public int FinalizarFaseECalcularEstrelas()
     {
         int estrelas = 0;
 
@@ -56,11 +56,8 @@ public class ScoreManager : MonoBehaviour
         {
             PlayerPrefs.SetInt(idFase + "_Estrelas", estrelas);
             PlayerPrefs.Save();
-            Debug.Log($"Novo Recorde! Você salvou {estrelas} estrela(s) na {idFase}.");
         }
-        else
-        {
-            Debug.Log($"Fase concluída com {estrelas} estrela(s). Recorde atual mantido em {estrelasSalvas}.");
-        }
+        
+        return estrelas; // Retorna o valor para a UI usar
     }
 }

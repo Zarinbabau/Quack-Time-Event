@@ -35,20 +35,21 @@ public class Fase1QTEController : MonoBehaviour
     private const int TOTAL_ACERTOS_OBJETIVO = 25;
 
     private int acertosAtuais = 0;
-    public int errosAtuais =0;
+    public int errosAtuais = 0;
     private bool jogoAtivo = false;
     private bool inputRecebido = false;
     private QTEAction acaoAtual;
     private AudioSource audioSource;
     private int errosSeguidos = 0;
     
-   private ScoreManager scoreManager;
+    private ScoreManager scoreManager;
 
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
         scoreManager = GetComponent<ScoreManager>(); // Pega a referência
     }
+
     private void Start()
     {
         IniciarJogo();
@@ -64,6 +65,7 @@ public class Fase1QTEController : MonoBehaviour
         characterSpriteRenderer.sprite = spriteIdle;
         keySpriteRenderer.sprite = null;
         acertosAtuais = 0;
+        errosSeguidos = 0; // Garante que comece zerado
         jogoAtivo = false;
 
         Debug.Log("O jogo começará em 3 segundos...");
@@ -106,7 +108,7 @@ public class Fase1QTEController : MonoBehaviour
                     acertou = true;
                     break;
                 }
-
+                
                 yield return null;
             }
 
@@ -116,6 +118,7 @@ public class Fase1QTEController : MonoBehaviour
             if (acertou && inputRecebido)
             {
                 acertosAtuais++;
+                errosSeguidos = 0; // Zera o combo de erros ao acertar
                 
                 // Adiciona os pontos enviando o tempo que o jogador gastou e o tempo limite Y
                 scoreManager.AdicionarPontos(tempoDecorrido, tempoParaResponder);
@@ -128,10 +131,21 @@ public class Fase1QTEController : MonoBehaviour
                 Debug.Log("Errou ou tempo esgotado!");
                 characterSpriteRenderer.sprite = spriteTriste;
                 errosAtuais++;
+                errosSeguidos++; // Soma 1 no combo de erros
 
+                // Remove os pontos
+                scoreManager.RemoverPontos(tempoDecorrido, tempoParaResponder);
 
                 // Toca som de erro
                 TocarSom(soundErro);
+
+                // Verifica Game Over
+                if (errosSeguidos >= 3)
+                {
+                    yield return new WaitForSeconds(0.5f); // Espera para mostrar o feedback triste
+                    Game_Over();
+                    yield break; // Interrompe a corrotina e encerra a fase
+                }
             }
 
             // Espera meio segundo antes de desativar a imagem e/ou avançar
@@ -206,12 +220,21 @@ public class Fase1QTEController : MonoBehaviour
         return false;
     }
 
-
     public void FinalizarJogo()
     {
         jogoAtivo = false;
         keySpriteRenderer.sprite = null;
         characterSpriteRenderer.sprite = spriteIdle;
         scoreManager.FinalizarFaseECalcularEstrelas();
+    }
+
+    public void Game_Over()
+    {
+        jogoAtivo = false;
+        keySpriteRenderer.sprite = null;
+        characterSpriteRenderer.sprite = spriteTriste;
+        
+        Debug.Log("GAME OVER! Você errou 3 vezes seguidas.");
+        // Coloque aqui a lógica para ativar a UI de derrota (ex: painel com botão de recarregar a fase)
     }
 }
