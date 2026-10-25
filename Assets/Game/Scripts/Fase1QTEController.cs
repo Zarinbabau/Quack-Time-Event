@@ -32,7 +32,7 @@ public class Fase1QTEController : MonoBehaviour
 
     [Header("Configurações do QTE")]
     [SerializeField] private float tempoParaResponder = 2.0f; // tempo Y para acertar
-    private const int TOTAL_ACERTOS_OBJETIVO = 10;
+    private const int TOTAL_ACERTOS_OBJETIVO = 25;
 
     private int acertosAtuais = 0;
     public int errosAtuais =0;
@@ -40,7 +40,8 @@ public class Fase1QTEController : MonoBehaviour
     private bool inputRecebido = false;
     private QTEAction acaoAtual;
     private AudioSource audioSource;
-
+    private int errosSeguidos = 0;
+    
    private ScoreManager scoreManager;
 
     private void Awake()
@@ -204,6 +205,7 @@ public class Fase1QTEController : MonoBehaviour
 
         return false;
     }
+
 
     public void FinalizarJogo()
     {

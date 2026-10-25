@@ -819,9 +819,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ScoreManager
   idFase: Fase 1
   pontosBase: 100
-  pontosPara1Estrela: 1000
-  pontosPara2Estrelas: 1500
-  pontosPara3Estrelas: 1800
+  pontosPara1Estrela: 2500
+  pontosPara2Estrelas: 3100
+  pontosPara3Estrelas: 3750
 --- !u!1 &1090242691
 GameObject:
   m_ObjectHideFlags: 0
