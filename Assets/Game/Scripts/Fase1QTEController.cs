@@ -43,7 +43,9 @@ public class Fase1QTEController : MonoBehaviour
     private int errosSeguidos = 0;
     
     private ScoreManager scoreManager;
-
+    
+    public EndGameUIManager endGameUI;
+    
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
@@ -225,7 +227,10 @@ public class Fase1QTEController : MonoBehaviour
         jogoAtivo = false;
         keySpriteRenderer.sprite = null;
         characterSpriteRenderer.sprite = spriteIdle;
-        scoreManager.FinalizarFaseECalcularEstrelas();
+        
+        // Pega as estrelas e manda a UI aparecer
+        int estrelasGanhas = scoreManager.FinalizarFaseECalcularEstrelas();
+        endGameUI.MostrarTela(estrelasGanhas);
     }
 
     public void Game_Over()
@@ -234,7 +239,7 @@ public class Fase1QTEController : MonoBehaviour
         keySpriteRenderer.sprite = null;
         characterSpriteRenderer.sprite = spriteTriste;
         
-        Debug.Log("GAME OVER! Você errou 3 vezes seguidas.");
-        // Coloque aqui a lógica para ativar a UI de derrota (ex: painel com botão de recarregar a fase)
+        // Manda 0 estrelas para a UI saber que é Game Over
+        endGameUI.MostrarTela(0); 
     }
 }

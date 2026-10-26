@@ -54,6 +54,8 @@ public class Fase2QTEController : MonoBehaviour
 
     private ScoreManager scoreManager;
 
+    public EndGameUIManager endGameUI;
+
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
@@ -228,7 +230,10 @@ public class Fase2QTEController : MonoBehaviour
         jogoAtivo = false;
         keySpriteRenderer.sprite = null;
         characterSpriteRenderer.sprite = spriteIdle;
-        scoreManager.FinalizarFaseECalcularEstrelas();
+        
+        // Pega as estrelas e manda a UI aparecer
+        int estrelasGanhas = scoreManager.FinalizarFaseECalcularEstrelas();
+        endGameUI.MostrarTela(estrelasGanhas);
     }
 
     public void Game_Over()
@@ -237,6 +242,7 @@ public class Fase2QTEController : MonoBehaviour
         keySpriteRenderer.sprite = null;
         characterSpriteRenderer.sprite = spriteTriste;
         
-        Debug.Log("GAME OVER! Você errou 3 vezes seguidas.");
+        // Manda 0 estrelas para a UI saber que é Game Over
+        endGameUI.MostrarTela(0); 
     }
 }

@@ -38,6 +38,37 @@ public class LevelSelectionMenu : MonoBehaviour
         
         CarregarEstrelasVisuais();
         AtualizarSelecaoVisual();
+
+        // CHECA SE VEIO DO BOTÃO "PRÓXIMA FASE"
+        if (PlayerPrefs.HasKey("AutoProgression_ToIndex"))
+        {
+            int indexAlvo = PlayerPrefs.GetInt("AutoProgression_ToIndex");
+            PlayerPrefs.DeleteKey("AutoProgression_ToIndex"); // Apaga para não repetir
+            
+            StartCoroutine(RotinaAutoProgresso(indexAlvo));
+        }
+    }
+
+// NOVA CORROTINA DE ANIMAÇÃO
+    private IEnumerator RotinaAutoProgresso(int indexAlvo)
+    {
+        inputsBloqueados = true;
+        
+        // Espera meio segundo pro menu carregar visualmente
+        yield return new WaitForSeconds(0.5f);
+
+        // Move a seleção uma por uma até chegar na fase desejada
+        while (currentIndex < indexAlvo)
+        {
+            MudarSelecao(1);
+            yield return new WaitForSeconds(0.5f); // Ritmo da animação (pode alterar)
+        }
+
+        // Aguarda um instante para o jogador ver que desbloqueou/chegou na foto
+        yield return new WaitForSeconds(0.5f);
+
+        // Dá o Enter automaticamente
+        ConfirmarFase();
     }
 
     private void CarregarEstrelasVisuais()
