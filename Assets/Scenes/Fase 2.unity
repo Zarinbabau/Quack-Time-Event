@@ -780,7 +780,7 @@ MonoBehaviour:
   foto2Estrelas: {fileID: 21300000, guid: 37d2404ae8997024abc0b42a6caf8105, type: 3}
   foto3Estrelas: {fileID: 21300000, guid: 42de1aac2f294414e8eb1534f4db35e5, type: 3}
   nomeCenaMenu: "Sele\xE7\xE3o de fase"
-  indiceProximaFaseNoMenu: 1
+  indiceProximaFaseNoMenu: 2
 --- !u!114 &980408092
 MonoBehaviour:
   m_ObjectHideFlags: 0
