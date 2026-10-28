@@ -48,6 +48,8 @@ public class Fase3QTEController : MonoBehaviour
 
     private ScoreManager scoreManager;
 
+    public EndGameUIManager endGameUI;
+
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
@@ -290,9 +292,11 @@ public class Fase3QTEController : MonoBehaviour
     public void FinalizarJogo()
     {
         jogoAtivo = false;
-        LimparSpritesTeclas();
+        LimparSpritesTeclas(); // A fase 3 usa esse método diferente para limpar as 3 teclas
         characterSpriteRenderer.sprite = spriteIdle;
-        scoreManager.FinalizarFaseECalcularEstrelas();
+        
+        int estrelasGanhas = scoreManager.FinalizarFaseECalcularEstrelas();
+        endGameUI.MostrarTela(estrelasGanhas);
     }
 
     public void Game_Over()
@@ -301,6 +305,6 @@ public class Fase3QTEController : MonoBehaviour
         LimparSpritesTeclas();
         characterSpriteRenderer.sprite = spriteTriste;
         
-        Debug.Log("GAME OVER! Você errou 3 vezes seguidas.");
+        endGameUI.MostrarTela(0);
     }
 }

@@ -231,7 +231,6 @@ public class Fase2QTEController : MonoBehaviour
         keySpriteRenderer.sprite = null;
         characterSpriteRenderer.sprite = spriteIdle;
         
-        // Pega as estrelas e manda a UI aparecer
         int estrelasGanhas = scoreManager.FinalizarFaseECalcularEstrelas();
         endGameUI.MostrarTela(estrelasGanhas);
     }
@@ -242,7 +241,6 @@ public class Fase2QTEController : MonoBehaviour
         keySpriteRenderer.sprite = null;
         characterSpriteRenderer.sprite = spriteTriste;
         
-        // Manda 0 estrelas para a UI saber que é Game Over
-        endGameUI.MostrarTela(0); 
+        endGameUI.MostrarTela(0);
     }
 }

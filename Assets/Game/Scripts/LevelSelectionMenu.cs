@@ -1,27 +1,24 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement; // Necessário para trocar de cena
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro; // Adicionado para suportar o TextMeshPro
 
 [System.Serializable]
 public class DadosFaseMenu
 {
-    [Tooltip("O mesmo ID usado no ScoreManager para salvar (Ex: Fase1)")]
     public string idFase;
-    
-    [Tooltip("O nome exato da Cena desta fase na Unity (Ex: Cena_Fase1)")]
     public string nomeDaCena;
-    
-    [Tooltip("O GameObject da foto no quadro")]
     public Transform fotoTransform;
-    
-    [Tooltip("Arraste os 3 GameObjects das estrelas desta fase")]
     public GameObject[] iconesEstrelas = new GameObject[3];
+    
+    [Tooltip("Arraste o GameObject da imagem do cadeado desta fase (se houver)")]
+    public GameObject iconeCadeado;
 }
 
 public class LevelSelectionMenu : MonoBehaviour
 {
     [Header("Configuração das Fases")]
-    [Tooltip("Configure as fases na ordem em que o jogador navega (Esquerda p/ Direita)")]
     public DadosFaseMenu[] fases;
     
     [Header("Configuração de Câmera")]
@@ -29,46 +26,34 @@ public class LevelSelectionMenu : MonoBehaviour
     public float zoomOffsetZ = -1.5f;
     public float velocidadeZoom = 2f;
 
+    [Header("UI de Fase Bloqueada")]
+    public GameObject painelBloqueado;
+    
+    [Tooltip("Arraste o componente de Texto (TextMeshPro) que exibirá a mensagem de bloqueio")]
+    public TMP_Text txtMensagemBloqueio; // Alterado para aceitar TextMeshPro
+
     private int currentIndex = 0;
     private bool inputsBloqueados = false;
+    private bool painelBloqueadoAberto = false;
 
     private void Start()
     {
         if (mainCamera == null) mainCamera = Camera.main;
         
+        if (painelBloqueado != null) 
+            painelBloqueado.SetActive(false);
+
         CarregarEstrelasVisuais();
+        VerificarCadeados();
         AtualizarSelecaoVisual();
 
-        // CHECA SE VEIO DO BOTÃO "PRÓXIMA FASE"
         if (PlayerPrefs.HasKey("AutoProgression_ToIndex"))
         {
             int indexAlvo = PlayerPrefs.GetInt("AutoProgression_ToIndex");
-            PlayerPrefs.DeleteKey("AutoProgression_ToIndex"); // Apaga para não repetir
+            PlayerPrefs.DeleteKey("AutoProgression_ToIndex"); 
             
             StartCoroutine(RotinaAutoProgresso(indexAlvo));
         }
-    }
-
-// NOVA CORROTINA DE ANIMAÇÃO
-    private IEnumerator RotinaAutoProgresso(int indexAlvo)
-    {
-        inputsBloqueados = true;
-        
-        // Espera meio segundo pro menu carregar visualmente
-        yield return new WaitForSeconds(0.5f);
-
-        // Move a seleção uma por uma até chegar na fase desejada
-        while (currentIndex < indexAlvo)
-        {
-            MudarSelecao(1);
-            yield return new WaitForSeconds(0.5f); // Ritmo da animação (pode alterar)
-        }
-
-        // Aguarda um instante para o jogador ver que desbloqueou/chegou na foto
-        yield return new WaitForSeconds(0.5f);
-
-        // Dá o Enter automaticamente
-        ConfirmarFase();
     }
 
     private void CarregarEstrelasVisuais()
@@ -87,8 +72,50 @@ public class LevelSelectionMenu : MonoBehaviour
         }
     }
 
+    private void VerificarCadeados()
+    {
+        // Fase 1 (índice 0) nunca tem cadeado, pois é a inicial.
+        if (fases.Length > 0 && fases[0].iconeCadeado != null)
+            fases[0].iconeCadeado.SetActive(false);
+
+        // Verifica a Fase 2
+        if (fases.Length > 1 && fases[1].iconeCadeado != null)
+        {
+            bool bloqueada = PlayerPrefs.GetInt(fases[0].idFase + "_Estrelas", 0) < 1;
+            fases[1].iconeCadeado.SetActive(bloqueada);
+        }
+
+        // Verifica a Fase 3
+        if (fases.Length > 2 && fases[2].iconeCadeado != null)
+        {
+            bool bloqueada = PlayerPrefs.GetInt(fases[1].idFase + "_Estrelas", 0) < 1;
+            fases[2].iconeCadeado.SetActive(bloqueada);
+        }
+
+        // Verifica a Fase Extra (Fase 4)
+        if (fases.Length > 3 && fases[3].iconeCadeado != null)
+        {
+            int e1 = PlayerPrefs.GetInt(fases[0].idFase + "_Estrelas", 0);
+            int e2 = PlayerPrefs.GetInt(fases[1].idFase + "_Estrelas", 0);
+            int e3 = PlayerPrefs.GetInt(fases[2].idFase + "_Estrelas", 0);
+
+            bool bloqueada = (e1 < 3 || e2 < 3 || e3 < 3);
+            fases[3].iconeCadeado.SetActive(bloqueada);
+        }
+    }
+
     private void Update()
     {
+        if (painelBloqueadoAberto)
+        {
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || 
+                Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Escape))
+            {
+                FecharPainelBloqueado();
+            }
+            return;
+        }
+
         if (inputsBloqueados) return;
 
         if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
@@ -102,7 +129,7 @@ public class LevelSelectionMenu : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
-            ConfirmarFase();
+            TentarEntrarNaFase();
         }
     }
 
@@ -130,45 +157,78 @@ public class LevelSelectionMenu : MonoBehaviour
         }
     }
 
-    private void ConfirmarFase()
+    private bool TentarEntrarNaFase()
     {
-        // Regras de Desbloqueio Baseadas no Índice Atual
-        
-        if (currentIndex == 1) // Fase 2
+        if (currentIndex == 1) 
         {
-            // Verifica se a Fase 1 (índice 0) tem pelo menos 1 estrela
             if (PlayerPrefs.GetInt(fases[0].idFase + "_Estrelas", 0) < 1)
             {
-                Debug.Log("Fase 2 Bloqueada! Complete a Fase 1 com pelo menos 1 estrela.");
-                return; // Impede o carregamento
+                ExibirAvisoBloqueio("Fase 2 Bloqueada!\nConquiste pelo menos 1 estrela na Fase 1 para liberar.");
+                return false;
             }
         }
-        else if (currentIndex == 2) // Fase 3
+        else if (currentIndex == 2) 
         {
-            // Verifica se a Fase 2 (índice 1) tem pelo menos 1 estrela
             if (PlayerPrefs.GetInt(fases[1].idFase + "_Estrelas", 0) < 1)
             {
-                Debug.Log("Fase 3 Bloqueada! Complete a Fase 2 com pelo menos 1 estrela.");
-                return;
+                ExibirAvisoBloqueio("Fase 3 Bloqueada!\nConquiste pelo menos 1 estrela na Fase 2 para liberar.");
+                return false;
             }
         }
-        else if (currentIndex == 3) // Fase Extra (Fase 4)
+        else if (currentIndex == 3) 
         {
-            // Fase extra exige 3 estrelas nas fases 1, 2 e 3
-            int estrelasFase1 = PlayerPrefs.GetInt(fases[0].idFase + "_Estrelas", 0);
-            int estrelasFase2 = PlayerPrefs.GetInt(fases[1].idFase + "_Estrelas", 0);
-            int estrelasFase3 = PlayerPrefs.GetInt(fases[2].idFase + "_Estrelas", 0);
+            int e1 = PlayerPrefs.GetInt(fases[0].idFase + "_Estrelas", 0);
+            int e2 = PlayerPrefs.GetInt(fases[1].idFase + "_Estrelas", 0);
+            int e3 = PlayerPrefs.GetInt(fases[2].idFase + "_Estrelas", 0);
 
-            if (estrelasFase1 < 3 || estrelasFase2 < 3 || estrelasFase3 < 3)
+            if (e1 < 3 || e2 < 3 || e3 < 3)
             {
-                Debug.Log("Fase Extra Bloqueada! Você precisa de 3 estrelas nas 3 primeiras fases.");
-                return; 
+                ExibirAvisoBloqueio("Fase Extra Bloqueada!\nÉ necessário conseguir 3 estrelas nas Fases 1, 2 e 3 para liberar esta fase.");
+                return false;
             }
         }
 
-        // Se passou pelos bloqueios, inicia a transição
         inputsBloqueados = true;
         StartCoroutine(ZoomCameraRotina());
+        return true;
+    }
+
+    private void ExibirAvisoBloqueio(string mensagem)
+    {
+        if (painelBloqueado != null)
+        {
+            if (txtMensagemBloqueio != null)
+                txtMensagemBloqueio.text = mensagem;
+
+            painelBloqueado.SetActive(true);
+            painelBloqueadoAberto = true;
+        }
+
+        inputsBloqueados = false;
+    }
+
+    public void FecharPainelBloqueado()
+    {
+        if (painelBloqueado != null)
+            painelBloqueado.SetActive(false);
+
+        painelBloqueadoAberto = false;
+        inputsBloqueados = false;
+    }
+
+    private IEnumerator RotinaAutoProgresso(int indexAlvo)
+    {
+        inputsBloqueados = true;
+        yield return new WaitForSeconds(0.5f);
+
+        while (currentIndex < indexAlvo)
+        {
+            MudarSelecao(1);
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        yield return new WaitForSeconds(0.5f);
+        TentarEntrarNaFase();
     }
 
     private IEnumerator ZoomCameraRotina()
@@ -186,8 +246,6 @@ public class LevelSelectionMenu : MonoBehaviour
             yield return null;
         }
 
-        // Carrega a cena real usando o novo campo 'nomeDaCena'
-        Debug.Log("Carregando cena: " + fases[currentIndex].nomeDaCena);
         SceneManager.LoadScene(fases[currentIndex].nomeDaCena);
     }
 }
