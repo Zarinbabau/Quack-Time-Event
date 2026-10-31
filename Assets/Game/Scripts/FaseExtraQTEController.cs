@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
-public class QTEControllerFaseExtra : MonoBehaviour
+public class FaseExtraQTEController : MonoBehaviour
 {
     public enum QTEAction { Esquerda, Direita, Cima, Baixo, Acao }
     public enum MecanicaQTE { Simples, Repeticao, Sequencia }
@@ -44,19 +44,22 @@ public class QTEControllerFaseExtra : MonoBehaviour
     [SerializeField] private float tempoSimples = 2.0f;
     [SerializeField] private float tempoRepeticao = 3.0f;
     [SerializeField] private float tempoSequencia = 4.0f;
-    
-    [Header("Sistema de Pontuação")]
-    [SerializeField] private int pontosBase = 100;
-    private int pontuacaoTotal = 0;
     private const int TOTAL_ACERTOS_OBJETIVO = 15;
 
+    [Header("UI de Fim de Jogo")]
+    public EndGameUIManager endGameUI;
+
     private int acertosAtuais = 0;
+    public int errosAtuais = 0;
+    private int errosSeguidos = 0;
     private bool jogoAtivo = false;
     private AudioSource audioSource;
+    private ScoreManager scoreManager;
 
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
+        scoreManager = GetComponent<ScoreManager>();
     }
 
     private void Start()
@@ -69,7 +72,8 @@ public class QTEControllerFaseExtra : MonoBehaviour
         characterSpriteRenderer.sprite = spriteIdle;
         OcultarTodasTeclas();
         acertosAtuais = 0;
-        pontuacaoTotal = 0;
+        errosAtuais = 0;
+        errosSeguidos = 0;
         jogoAtivo = false;
 
         yield return new WaitForSeconds(3.0f);
@@ -89,7 +93,6 @@ public class QTEControllerFaseExtra : MonoBehaviour
             float tempoGasto = 0f;
             QTEAction acaoFinal = QTEAction.Acao;
 
-            // Delega o resultado de sucesso e o tempo gasto para as variáveis locais
             if (mecanicaAtual == MecanicaQTE.Simples)
             {
                 yield return StartCoroutine(RotinaSimples((resultado, tempo) => { eventoConcluidoComSucesso = resultado; tempoGasto = tempo; }, acao => acaoFinal = acao));
@@ -104,40 +107,54 @@ public class QTEControllerFaseExtra : MonoBehaviour
             }
 
             OcultarTodasTeclas();
+            float tempoLimiteAtual = ObterTempoLimiteMecanica(mecanicaAtual);
 
             if (eventoConcluidoComSucesso)
             {
                 acertosAtuais++;
+                errosSeguidos = 0; // Zera o combo de erros
+                
+                scoreManager.AdicionarPontos(tempoGasto, tempoLimiteAtual);
+                
                 characterSpriteRenderer.sprite = ObterSpriteAcao(acaoFinal);
                 TocarSom(soundAcerto);
-
-                // Cálculo do multiplicador baseado no tempo restante
-                float tempoLimite = mecanicaAtual == MecanicaQTE.Simples ? tempoSimples : (mecanicaAtual == MecanicaQTE.Repeticao ? tempoRepeticao : tempoSequencia);
-                float tempoRestante = tempoLimite - tempoGasto;
-                
-                // Multiplicador vai de 1.0x (no limite do tempo) até 2.0x (instantâneo)
-                float multiplicador = 1f + (tempoRestante / tempoLimite); 
-                int pontosGanhos = Mathf.RoundToInt(pontosBase * multiplicador);
-                pontuacaoTotal += pontosGanhos;
-
-                Debug.Log($"Acertou! Tempo: {tempoGasto:F2}s | Mult: {multiplicador:F2}x | Pontos ganhos: {pontosGanhos} | Pontuação Total: {pontuacaoTotal} | Progresso: {acertosAtuais}/{TOTAL_ACERTOS_OBJETIVO}");
             }
             else
             {
                 Debug.Log("Errou o evento!");
                 characterSpriteRenderer.sprite = spriteTriste;
                 TocarSom(soundErro);
+
+                errosAtuais++;
+                errosSeguidos++; // Soma erro ao combo
+                scoreManager.RemoverPontos(tempoGasto, tempoLimiteAtual);
+
+                if (errosSeguidos >= 3)
+                {
+                    yield return new WaitForSeconds(0.5f);
+                    Game_Over();
+                    yield break;
+                }
             }
 
             yield return new WaitForSeconds(0.5f);
 
             if (acertosAtuais >= TOTAL_ACERTOS_OBJETIVO)
             {
-                jogoAtivo = false;
-                characterSpriteRenderer.sprite = spriteIdle;
-                Debug.Log($"Fase Extra Concluída! Sua pontuação final foi de: {pontuacaoTotal}");
+                FinalizarJogo();
                 yield break;
             }
+        }
+    }
+
+    private float ObterTempoLimiteMecanica(MecanicaQTE mecanica)
+    {
+        switch (mecanica)
+        {
+            case MecanicaQTE.Simples: return tempoSimples;
+            case MecanicaQTE.Repeticao: return tempoRepeticao;
+            case MecanicaQTE.Sequencia: return tempoSequencia;
+            default: return 2.0f;
         }
     }
 
@@ -146,7 +163,6 @@ public class QTEControllerFaseExtra : MonoBehaviour
         QTEAction acao = (QTEAction)Random.Range(0, 5);
         acaoFinal(acao);
         
-        // Alterado para [1]
         keySpriteRenderers[1].gameObject.SetActive(true);
         keySpriteRenderers[1].sprite = ObterSpriteTecla(acao);
         keySpriteRenderers[1].color = Color.white;
@@ -168,11 +184,9 @@ public class QTEControllerFaseExtra : MonoBehaviour
         acaoFinal(acao);
         int toques = 0;
 
-        // Alterado para [1]
         keySpriteRenderers[1].gameObject.SetActive(true);
         AtualizarSpriteRepeticao(acao, toques);
         
-
         float tempo = 0f;
         while (tempo < tempoRepeticao && toques < 3)
         {
@@ -250,31 +264,55 @@ public class QTEControllerFaseExtra : MonoBehaviour
     private void AtualizarSpriteRepeticao(QTEAction acao, int estagio)
     {
         int index = Mathf.Clamp(estagio, 0, 2);
-        // Alterado para [1]
-        keySpriteRenderers[1].sprite = acao switch
+        
+        switch (acao)
         {
-            QTEAction.Esquerda => keySpritesEsquerda[index],
-            QTEAction.Direita  => keySpritesDireita[index],
-            QTEAction.Cima     => keySpritesCima[index],
-            QTEAction.Baixo    => keySpritesBaixo[index],
-            QTEAction.Acao     => keySpritesAcao[index],
-            _ => null
-        };
+            case QTEAction.Esquerda: keySpriteRenderers[1].sprite = keySpritesEsquerda[index]; break;
+            case QTEAction.Direita:  keySpriteRenderers[1].sprite = keySpritesDireita[index]; break;
+            case QTEAction.Cima:     keySpriteRenderers[1].sprite = keySpritesCima[index]; break;
+            case QTEAction.Baixo:    keySpriteRenderers[1].sprite = keySpritesBaixo[index]; break;
+            case QTEAction.Acao:     keySpriteRenderers[1].sprite = keySpritesAcao[index]; break;
+            default:                 keySpriteRenderers[1].sprite = null; break;
+        }
     }
 
     private Sprite ObterSpriteTecla(QTEAction acao)
     {
-        return acao switch { QTEAction.Esquerda => spriteKeyEsquerda, QTEAction.Direita => spriteKeyDireita, QTEAction.Cima => spriteKeyCima, QTEAction.Baixo => spriteKeyBaixo, QTEAction.Acao => spriteKeyAcao, _ => null };
+        switch (acao)
+        {
+            case QTEAction.Esquerda: return spriteKeyEsquerda;
+            case QTEAction.Direita:  return spriteKeyDireita;
+            case QTEAction.Cima:     return spriteKeyCima;
+            case QTEAction.Baixo:    return spriteKeyBaixo;
+            case QTEAction.Acao:     return spriteKeyAcao;
+            default:                 return null;
+        }
     }
 
     private Sprite ObterSpriteAcao(QTEAction acao)
     {
-        return acao switch { QTEAction.Esquerda => spriteEsquerda, QTEAction.Direita => spriteDireita, QTEAction.Cima => spriteCima, QTEAction.Baixo => spriteBaixo, QTEAction.Acao => spriteAcao, _ => spriteIdle };
+        switch (acao)
+        {
+            case QTEAction.Esquerda: return spriteEsquerda;
+            case QTEAction.Direita:  return spriteDireita;
+            case QTEAction.Cima:     return spriteCima;
+            case QTEAction.Baixo:    return spriteBaixo;
+            case QTEAction.Acao:     return spriteAcao;
+            default:                 return spriteIdle;
+        }
     }
 
     private bool ChecarInputCorreto(QTEAction acao)
     {
-        return acao switch { QTEAction.Esquerda => Input.GetKeyDown(KeyCode.LeftArrow), QTEAction.Direita => Input.GetKeyDown(KeyCode.RightArrow), QTEAction.Cima => Input.GetKeyDown(KeyCode.UpArrow), QTEAction.Baixo => Input.GetKeyDown(KeyCode.DownArrow), QTEAction.Acao => Input.GetKeyDown(KeyCode.Space), _ => false };
+        switch (acao)
+        {
+            case QTEAction.Esquerda: return Input.GetKeyDown(KeyCode.LeftArrow);
+            case QTEAction.Direita:  return Input.GetKeyDown(KeyCode.RightArrow);
+            case QTEAction.Cima:     return Input.GetKeyDown(KeyCode.UpArrow);
+            case QTEAction.Baixo:    return Input.GetKeyDown(KeyCode.DownArrow);
+            case QTEAction.Acao:     return Input.GetKeyDown(KeyCode.Space);
+            default:                 return false;
+        }
     }
 
     private bool ChecarInputIncorretoGeral(QTEAction acaoEsperada)
@@ -290,5 +328,24 @@ public class QTEControllerFaseExtra : MonoBehaviour
     private void TocarSom(AudioClip clip)
     {
         if (clip != null && audioSource != null) audioSource.PlayOneShot(clip);
+    }
+
+    public void FinalizarJogo()
+    {
+        jogoAtivo = false;
+        OcultarTodasTeclas();
+        characterSpriteRenderer.sprite = spriteIdle;
+        
+        int estrelasGanhas = scoreManager.FinalizarFaseECalcularEstrelas();
+        endGameUI.MostrarTela(estrelasGanhas);
+    }
+
+    public void Game_Over()
+    {
+        jogoAtivo = false;
+        OcultarTodasTeclas();
+        characterSpriteRenderer.sprite = spriteTriste;
+        
+        endGameUI.MostrarTela(0);
     }
 }

@@ -774,11 +774,11 @@ MonoBehaviour:
   characterSpriteRenderer: {fileID: 1589661912}
   keySpriteRenderer: {fileID: 9889338}
   spriteIdle: {fileID: 21300000, guid: f2c051f83324bb848a334901e5a00ef6, type: 3}
-  spriteEsquerda: {fileID: 21300000, guid: a217c5b00c4b32945a4f98cfa88aed62, type: 3}
-  spriteDireita: {fileID: 21300000, guid: 5e61167e3a9c5fd46af9ad96b9ce4b63, type: 3}
-  spriteCima: {fileID: 21300000, guid: bf6e0367b4417f14b917279aea39d3f7, type: 3}
-  spriteBaixo: {fileID: 21300000, guid: 5f2788f619d6a8344a66cff6c7db95e0, type: 3}
-  spriteAcao: {fileID: 21300000, guid: 65a183c99ccdf8c449e6e6b1fe64a32c, type: 3}
+  spriteEsquerda: {fileID: 21300000, guid: a5c719de1559711499985058a1068798, type: 3}
+  spriteDireita: {fileID: 21300000, guid: 77d8a1b8eeac44241bc08e25e84fb1dc, type: 3}
+  spriteCima: {fileID: 21300000, guid: 81640e8f7fdebcc4fbcc3fd6b95415ce, type: 3}
+  spriteBaixo: {fileID: 21300000, guid: dd6a20d2f654ce2498faf7753c5ee6e6, type: 3}
+  spriteAcao: {fileID: 21300000, guid: fd2cbb572744c73448c65a64569ffc65, type: 3}
   spriteTriste: {fileID: 21300000, guid: f3fdbdabc8ace704a84d36f6fab5089d, type: 3}
   keySpritesEsquerda:
   - {fileID: 21300000, guid: 8b0582ca5fa6efc4e926237f8d0a7b0a, type: 3}
