@@ -44,7 +44,12 @@ public class FaseExtraQTEController : MonoBehaviour
     [SerializeField] private float tempoSimples = 2.0f;
     [SerializeField] private float tempoRepeticao = 3.0f;
     [SerializeField] private float tempoSequencia = 4.0f;
-    private const int TOTAL_ACERTOS_OBJETIVO = 15;
+    private const int TOTAL_ACERTOS_OBJETIVO = 25;
+
+    [Header("Barra de Progresso")]
+    [Tooltip("Arraste o Transform do retângulo da barra (Objeto Pai) aqui")]
+    public Transform barraProgresso;
+    private Vector3 escalaOriginalBarra;
 
     [Header("UI de Fim de Jogo")]
     public EndGameUIManager endGameUI;
@@ -69,6 +74,15 @@ public class FaseExtraQTEController : MonoBehaviour
 
     private IEnumerator RotinaInicio()
     {
+        // === CÓDIGO DA BARRA ===
+        if (barraProgresso != null)
+        {
+            if (escalaOriginalBarra == Vector3.zero) 
+                escalaOriginalBarra = barraProgresso.localScale;
+                
+            barraProgresso.localScale = new Vector3(0f, escalaOriginalBarra.y, escalaOriginalBarra.z);
+        }
+
         characterSpriteRenderer.sprite = spriteIdle;
         OcultarTodasTeclas();
         acertosAtuais = 0;
@@ -112,10 +126,10 @@ public class FaseExtraQTEController : MonoBehaviour
             if (eventoConcluidoComSucesso)
             {
                 acertosAtuais++;
-                errosSeguidos = 0; // Zera o combo de erros
-                
+                AtualizarBarraProgresso();
+
+                errosSeguidos = 0;
                 scoreManager.AdicionarPontos(tempoGasto, tempoLimiteAtual);
-                
                 characterSpriteRenderer.sprite = ObterSpriteAcao(acaoFinal);
                 TocarSom(soundAcerto);
             }
@@ -126,7 +140,7 @@ public class FaseExtraQTEController : MonoBehaviour
                 TocarSom(soundErro);
 
                 errosAtuais++;
-                errosSeguidos++; // Soma erro ao combo
+                errosSeguidos++; 
                 scoreManager.RemoverPontos(tempoGasto, tempoLimiteAtual);
 
                 if (errosSeguidos >= 3)
@@ -328,6 +342,15 @@ public class FaseExtraQTEController : MonoBehaviour
     private void TocarSom(AudioClip clip)
     {
         if (clip != null && audioSource != null) audioSource.PlayOneShot(clip);
+    }
+
+    private void AtualizarBarraProgresso()
+    {
+        if (barraProgresso != null)
+        {
+            float porcentagem = (float)acertosAtuais / TOTAL_ACERTOS_OBJETIVO;
+            barraProgresso.localScale = new Vector3(escalaOriginalBarra.x * porcentagem, escalaOriginalBarra.y, escalaOriginalBarra.z);
+        }
     }
 
     public void FinalizarJogo()

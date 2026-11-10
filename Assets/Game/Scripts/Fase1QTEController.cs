@@ -45,6 +45,11 @@ public class Fase1QTEController : MonoBehaviour
     private ScoreManager scoreManager;
     
     public EndGameUIManager endGameUI;
+
+    [Header("Barra de Progresso")]
+    [Tooltip("Arraste o Transform do retângulo da barra aqui")]
+    public Transform barraProgresso;
+    private Vector3 escalaOriginalBarra;
     
     private void Awake()
     {
@@ -64,6 +69,16 @@ public class Fase1QTEController : MonoBehaviour
 
     private IEnumerator RotinaInicio()
     {
+        if (barraProgresso != null)
+        {
+            // Salva o tamanho original da primeira vez que rodar
+            if (escalaOriginalBarra == Vector3.zero) 
+                escalaOriginalBarra = barraProgresso.localScale;
+                
+            // Zera o eixo X para a barra começar vazia
+            barraProgresso.localScale = new Vector3(0f, escalaOriginalBarra.y, escalaOriginalBarra.z);
+        }
+
         characterSpriteRenderer.sprite = spriteIdle;
         keySpriteRenderer.sprite = null;
         acertosAtuais = 0;
@@ -75,6 +90,7 @@ public class Fase1QTEController : MonoBehaviour
 
         jogoAtivo = true;
         StartCoroutine(RotinaQTE());
+        
     }
 
     private IEnumerator RotinaQTE()
@@ -120,6 +136,8 @@ public class Fase1QTEController : MonoBehaviour
             if (acertou && inputRecebido)
             {
                 acertosAtuais++;
+                AtualizarBarraProgresso();
+                
                 errosSeguidos = 0; // Zera o combo de erros ao acertar
                 
                 // Adiciona os pontos enviando o tempo que o jogador gastou e o tempo limite Y
@@ -222,6 +240,17 @@ public class Fase1QTEController : MonoBehaviour
         return false;
     }
 
+private void AtualizarBarraProgresso()
+    {
+        if (barraProgresso != null)
+        {
+            // Calcula a porcentagem de conclusão (de 0.0 até 1.0)
+            float porcentagem = (float)acertosAtuais / TOTAL_ACERTOS_OBJETIVO;
+            
+            // Aplica a porcentagem apenas na largura (eixo X)
+            barraProgresso.localScale = new Vector3(escalaOriginalBarra.x * porcentagem, escalaOriginalBarra.y, escalaOriginalBarra.z);
+        }
+    }
     public void FinalizarJogo()
     {
         jogoAtivo = false;

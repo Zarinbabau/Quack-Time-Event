@@ -35,25 +35,30 @@ public class Fase3QTEController : MonoBehaviour
     [SerializeField] private AudioClip soundErro;
 
     [Header("Configurações da Fase 3")]
-    [SerializeField] private float tempoParaResponder = 4.0f; // Tempo total para toda a sequência
+    [SerializeField] private float tempoParaResponder = 4.0f;
     private const int TAMANHO_SEQUENCIA = 3;
     private const int TOTAL_ACERTOS_OBJETIVO = 25;
 
+    [Header("Barra de Progresso")]
+    [Tooltip("Arraste o Transform do retângulo da barra (Objeto Pai) aqui")]
+    public Transform barraProgresso;
+    private Vector3 escalaOriginalBarra;
+
+    [Header("UI de Fim de Jogo")]
+    public EndGameUIManager endGameUI;
+
     private int acertosAtuais = 0;
-    public int errosAtuais = 0; // Adicionado para manter o padrão
+    public int errosAtuais = 0;
     private bool jogoAtivo = false;
     private QTEAction[] sequenciaAtual = new QTEAction[TAMANHO_SEQUENCIA];
     private AudioSource audioSource;
-    private int errosSeguidos = 0; // Controla o Game Over
-
+    private int errosSeguidos = 0;
     private ScoreManager scoreManager;
-
-    public EndGameUIManager endGameUI;
 
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
-        scoreManager = GetComponent<ScoreManager>(); // Pega a referência
+        scoreManager = GetComponent<ScoreManager>(); 
     }
 
     private void Start()
@@ -68,11 +73,20 @@ public class Fase3QTEController : MonoBehaviour
 
     private IEnumerator RotinaInicio()
     {
+        // === CÓDIGO DA BARRA ===
+        if (barraProgresso != null)
+        {
+            if (escalaOriginalBarra == Vector3.zero) 
+                escalaOriginalBarra = barraProgresso.localScale;
+                
+            barraProgresso.localScale = new Vector3(0f, escalaOriginalBarra.y, escalaOriginalBarra.z);
+        }
+
         characterSpriteRenderer.sprite = spriteIdle;
         LimparSpritesTeclas();
         acertosAtuais = 0;
         errosAtuais = 0;
-        errosSeguidos = 0; // Garante que comece zerado
+        errosSeguidos = 0; 
         jogoAtivo = false;
 
         Debug.Log("Iniciando Fase 3 em 3 segundos...");
@@ -88,7 +102,6 @@ public class Fase3QTEController : MonoBehaviour
         {
             characterSpriteRenderer.sprite = spriteIdle;
 
-            // 1. Sorteia e exibe as 3 teclas simultaneamente
             GerarSequenciaAleatoria();
             ExibirTodasAsTeclas();
 
@@ -98,27 +111,23 @@ public class Fase3QTEController : MonoBehaviour
             float tempoDecorrido = 0f;
             bool errou = false;
 
-            // 2. Loop de tempo para aguardar o jogador apertar na ordem correta
             while (tempoDecorrido < tempoParaResponder && indicePassoAtual < TAMANHO_SEQUENCIA)
             {
                 tempoDecorrido += Time.deltaTime;
                 QTEAction acaoEsperada = sequenciaAtual[indicePassoAtual];
 
-                // Checa se o jogador apertou a tecla incorreta da rodada
                 if (ChecarInputIncorreto(acaoEsperada))
                 {
                     errou = true;
                     break;
                 }
 
-                // Checa se o jogador acertou a tecla esperada do passo atual
                 if (ChecarInputCorreto(acaoEsperada))
                 {
                     indicePassoAtual++;
 
                     if (indicePassoAtual < TAMANHO_SEQUENCIA)
                     {
-                        // Atualiza qual tecla está ativa no momento
                         AtualizarDestaqueTeclas(indicePassoAtual);
                         TocarSom(soundCliqueProgresso != null ? soundCliqueProgresso : soundAcerto);
                     }
@@ -129,14 +138,13 @@ public class Fase3QTEController : MonoBehaviour
 
             LimparSpritesTeclas();
 
-            // 3. Resultado do evento
             if (!errou && indicePassoAtual >= TAMANHO_SEQUENCIA)
             {
                 acertosAtuais++;
-                errosSeguidos = 0; // Zera o combo de erros
+                AtualizarBarraProgresso();
 
+                errosSeguidos = 0;
                 scoreManager.AdicionarPontos(tempoDecorrido, tempoParaResponder);
-
                 characterSpriteRenderer.sprite = ObterSpriteAcao(sequenciaAtual[TAMANHO_SEQUENCIA - 1]);
                 TocarSom(soundAcerto);
             }
@@ -147,19 +155,17 @@ public class Fase3QTEController : MonoBehaviour
                 TocarSom(soundErro);
 
                 errosAtuais++;
-                errosSeguidos++; // Soma 1 no combo de erros
-                
+                errosSeguidos++; 
                 scoreManager.RemoverPontos(tempoDecorrido, tempoParaResponder);
 
                 if (errosSeguidos >= 3)
                 {
-                    yield return new WaitForSeconds(0.5f); // Espera para mostrar o feedback triste
+                    yield return new WaitForSeconds(0.5f); 
                     Game_Over();
-                    yield break; // Interrompe a fase
+                    yield break; 
                 }
             }
 
-            // Espera meio segundo antes de voltar ao Idle
             yield return new WaitForSeconds(0.5f);
 
             if (acertosAtuais >= TOTAL_ACERTOS_OBJETIVO)
@@ -200,21 +206,9 @@ public class Fase3QTEController : MonoBehaviour
 
             Color cor = keySpriteRenderers[i].color;
 
-            if (i < indiceAtual)
-            {
-                // Teclas já acertadas: ficam com opacidade bem baixa
-                cor.a = 0.15f;
-            }
-            else if (i == indiceAtual)
-            {
-                // Tecla que DEVE ser apertada agora: opacidade total
-                cor.a = 1.0f;
-            }
-            else
-            {
-                // Teclas futuras na sequência: semitransparentes
-                cor.a = 0.4f;
-            }
+            if (i < indiceAtual) cor.a = 0.15f;
+            else if (i == indiceAtual) cor.a = 1.0f;
+            else cor.a = 0.4f;
 
             keySpriteRenderers[i].color = cor;
         }
@@ -289,10 +283,19 @@ public class Fase3QTEController : MonoBehaviour
         }
     }
 
+    private void AtualizarBarraProgresso()
+    {
+        if (barraProgresso != null)
+        {
+            float porcentagem = (float)acertosAtuais / TOTAL_ACERTOS_OBJETIVO;
+            barraProgresso.localScale = new Vector3(escalaOriginalBarra.x * porcentagem, escalaOriginalBarra.y, escalaOriginalBarra.z);
+        }
+    }
+
     public void FinalizarJogo()
     {
         jogoAtivo = false;
-        LimparSpritesTeclas(); // A fase 3 usa esse método diferente para limpar as 3 teclas
+        LimparSpritesTeclas(); 
         characterSpriteRenderer.sprite = spriteIdle;
         
         int estrelasGanhas = scoreManager.FinalizarFaseECalcularEstrelas();

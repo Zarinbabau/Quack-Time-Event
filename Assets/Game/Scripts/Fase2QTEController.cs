@@ -45,16 +45,21 @@ public class Fase2QTEController : MonoBehaviour
     private const int REPETICOES_NECESSARIAS = 3;
     private const int TOTAL_ACERTOS_OBJETIVO = 25;
 
+    [Header("Barra de Progresso")]
+    [Tooltip("Arraste o Transform do retângulo da barra (Objeto Pai) aqui")]
+    public Transform barraProgresso;
+    private Vector3 escalaOriginalBarra;
+
+    [Header("UI de Fim de Jogo")]
+    public EndGameUIManager endGameUI;
+
     private int acertosAtuais = 0;
     public int errosAtuais = 0;
     private bool jogoAtivo = false;
     private QTEAction acaoAtual;
     private AudioSource audioSource;
     private int errosSeguidos = 0; 
-
     private ScoreManager scoreManager;
-
-    public EndGameUIManager endGameUI;
 
     private void Awake()
     {
@@ -74,6 +79,15 @@ public class Fase2QTEController : MonoBehaviour
 
     private IEnumerator RotinaInicio()
     {
+        // === CÓDIGO DA BARRA ===
+        if (barraProgresso != null)
+        {
+            if (escalaOriginalBarra == Vector3.zero) 
+                escalaOriginalBarra = barraProgresso.localScale;
+                
+            barraProgresso.localScale = new Vector3(0f, escalaOriginalBarra.y, escalaOriginalBarra.z);
+        }
+
         characterSpriteRenderer.sprite = spriteIdle;
         keySpriteRenderer.sprite = null;
         acertosAtuais = 0;
@@ -130,6 +144,8 @@ public class Fase2QTEController : MonoBehaviour
             if (!errou && toquesConcluidos >= REPETICOES_NECESSARIAS)
             {
                 acertosAtuais++;
+                AtualizarBarraProgresso();
+                
                 errosSeguidos = 0; 
                 scoreManager.AdicionarPontos(tempoDecorrido, tempoParaResponder);
                 characterSpriteRenderer.sprite = ObterSpriteAcao(acaoAtual);
@@ -163,7 +179,7 @@ public class Fase2QTEController : MonoBehaviour
 
             characterSpriteRenderer.sprite = spriteIdle;
         }
-    } // <- A CHAVE QUE ESTAVA FALTANDO/CAUSANDO O ERRO ESTÁ AQUI
+    }
 
     private void AtualizarSpriteTecla(QTEAction acao, int estagio)
     {
@@ -222,6 +238,15 @@ public class Fase2QTEController : MonoBehaviour
         if (clip != null && audioSource != null)
         {
             audioSource.PlayOneShot(clip);
+        }
+    }
+
+    private void AtualizarBarraProgresso()
+    {
+        if (barraProgresso != null)
+        {
+            float porcentagem = (float)acertosAtuais / TOTAL_ACERTOS_OBJETIVO;
+            barraProgresso.localScale = new Vector3(escalaOriginalBarra.x * porcentagem, escalaOriginalBarra.y, escalaOriginalBarra.z);
         }
     }
 
