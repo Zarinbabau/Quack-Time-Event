@@ -43,11 +43,11 @@ public class EndGameUIManager : MonoBehaviour
         // Se o painel não estiver ativo, ignora os comandos
         if (!painelFimDeJogo.activeSelf || botoesAtivos.Count == 0) return;
 
-        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             MudarSelecaoBotao(1);
         }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
+        else if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             MudarSelecaoBotao(-1);
         }
