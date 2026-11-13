@@ -1,8 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using TMPro; // Adicionado para suportar o TextMeshPro
+using TMPro;
 
 [System.Serializable]
 public class DadosFaseMenu
@@ -11,7 +10,6 @@ public class DadosFaseMenu
     public string nomeDaCena;
     public Transform fotoTransform;
     public GameObject[] iconesEstrelas = new GameObject[3];
-    
     [Tooltip("Arraste o GameObject da imagem do cadeado desta fase (se houver)")]
     public GameObject iconeCadeado;
 }
@@ -28,13 +26,12 @@ public class LevelSelectionMenu : MonoBehaviour
 
     [Header("UI de Fase Bloqueada")]
     public GameObject painelBloqueado;
-    
-    [Tooltip("Arraste o componente de Texto (TextMeshPro) que exibirá a mensagem de bloqueio")]
-    public TMP_Text txtMensagemBloqueio; // Alterado para aceitar TextMeshPro
+    public TMP_Text txtMensagemBloqueio; 
 
     private int currentIndex = 0;
     private bool inputsBloqueados = false;
     private bool painelBloqueadoAberto = false;
+    private Vector3 ultimaPosicaoMouse;
 
     private void Start()
     {
@@ -42,6 +39,8 @@ public class LevelSelectionMenu : MonoBehaviour
         
         if (painelBloqueado != null) 
             painelBloqueado.SetActive(false);
+
+        ultimaPosicaoMouse = Input.mousePosition;
 
         CarregarEstrelasVisuais();
         VerificarCadeados();
@@ -51,7 +50,6 @@ public class LevelSelectionMenu : MonoBehaviour
         {
             int indexAlvo = PlayerPrefs.GetInt("AutoProgression_ToIndex");
             PlayerPrefs.DeleteKey("AutoProgression_ToIndex"); 
-            
             StartCoroutine(RotinaAutoProgresso(indexAlvo));
         }
     }
@@ -61,46 +59,31 @@ public class LevelSelectionMenu : MonoBehaviour
         foreach (var fase in fases)
         {
             int estrelasGanhas = PlayerPrefs.GetInt(fase.idFase + "_Estrelas", 0);
-
             for (int i = 0; i < 3; i++)
             {
                 if (fase.iconesEstrelas[i] != null)
-                {
                     fase.iconesEstrelas[i].SetActive(i < estrelasGanhas);
-                }
             }
         }
     }
 
     private void VerificarCadeados()
     {
-        // Fase 1 (índice 0) nunca tem cadeado, pois é a inicial.
         if (fases.Length > 0 && fases[0].iconeCadeado != null)
             fases[0].iconeCadeado.SetActive(false);
 
-        // Verifica a Fase 2
         if (fases.Length > 1 && fases[1].iconeCadeado != null)
-        {
-            bool bloqueada = PlayerPrefs.GetInt(fases[0].idFase + "_Estrelas", 0) < 1;
-            fases[1].iconeCadeado.SetActive(bloqueada);
-        }
+            fases[1].iconeCadeado.SetActive(PlayerPrefs.GetInt(fases[0].idFase + "_Estrelas", 0) < 1);
 
-        // Verifica a Fase 3
         if (fases.Length > 2 && fases[2].iconeCadeado != null)
-        {
-            bool bloqueada = PlayerPrefs.GetInt(fases[1].idFase + "_Estrelas", 0) < 1;
-            fases[2].iconeCadeado.SetActive(bloqueada);
-        }
+            fases[2].iconeCadeado.SetActive(PlayerPrefs.GetInt(fases[1].idFase + "_Estrelas", 0) < 1);
 
-        // Verifica a Fase Extra (Fase 4)
         if (fases.Length > 3 && fases[3].iconeCadeado != null)
         {
             int e1 = PlayerPrefs.GetInt(fases[0].idFase + "_Estrelas", 0);
             int e2 = PlayerPrefs.GetInt(fases[1].idFase + "_Estrelas", 0);
             int e3 = PlayerPrefs.GetInt(fases[2].idFase + "_Estrelas", 0);
-
-            bool bloqueada = (e1 < 3 || e2 < 3 || e3 < 3);
-            fases[3].iconeCadeado.SetActive(bloqueada);
+            fases[3].iconeCadeado.SetActive(e1 < 3 || e2 < 3 || e3 < 3);
         }
     }
 
@@ -108,8 +91,8 @@ public class LevelSelectionMenu : MonoBehaviour
     {
         if (painelBloqueadoAberto)
         {
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || 
-                Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Space) || 
+                Input.GetMouseButtonDown(0)) 
             {
                 FecharPainelBloqueado();
             }
@@ -118,6 +101,40 @@ public class LevelSelectionMenu : MonoBehaviour
 
         if (inputsBloqueados) return;
 
+        // --- SISTEMA DO MOUSE ---
+        bool moveuMouse = Input.mousePosition != ultimaPosicaoMouse;
+        ultimaPosicaoMouse = Input.mousePosition;
+
+        if (moveuMouse)
+        {
+            VerificarMouseSobreFase();
+        }
+
+        // Lógica de Clique do Mouse
+        if (Input.GetMouseButtonDown(0))
+        {
+            // Compensa a distância da câmera para garantir que o clique vá até a foto
+            Vector3 mousePos = Input.mousePosition;
+            mousePos.z = Mathf.Abs(mainCamera.transform.position.z);
+            Vector2 posicaoMouseMundo = mainCamera.ScreenToWorldPoint(mousePos);
+            
+            // Verifica qual Collider2D está exatamente nesse ponto
+            Collider2D hit = Physics2D.OverlapPoint(posicaoMouseMundo);
+
+            if (hit != null)
+            {
+                for (int i = 0; i < fases.Length; i++)
+                {
+                    if (hit.transform == fases[i].fotoTransform || hit.transform.IsChildOf(fases[i].fotoTransform))
+                    {
+                        if (currentIndex == i) TentarEntrarNaFase();
+                        break;
+                    }
+                }
+            }
+        }
+
+        // --- SISTEMA DO TECLADO ---
         if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
         {
             MudarSelecao(1);
@@ -127,19 +144,42 @@ public class LevelSelectionMenu : MonoBehaviour
             MudarSelecao(-1);
         }
 
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             TentarEntrarNaFase();
+        }
+    }
+
+    private void VerificarMouseSobreFase()
+    {
+        Vector3 mousePos = Input.mousePosition;
+        mousePos.z = Mathf.Abs(mainCamera.transform.position.z);
+        Vector2 posicaoMouseMundo = mainCamera.ScreenToWorldPoint(mousePos);
+        
+        Collider2D hit = Physics2D.OverlapPoint(posicaoMouseMundo);
+
+        if (hit != null)
+        {
+            for (int i = 0; i < fases.Length; i++)
+            {
+                if (hit.transform == fases[i].fotoTransform || hit.transform.IsChildOf(fases[i].fotoTransform))
+                {
+                    if (currentIndex != i)
+                    {
+                        currentIndex = i;
+                        AtualizarSelecaoVisual();
+                    }
+                    break;
+                }
+            }
         }
     }
 
     private void MudarSelecao(int direcao)
     {
         currentIndex += direcao;
-        
         if (currentIndex < 0) currentIndex = 0;
         if (currentIndex >= fases.Length) currentIndex = fases.Length - 1;
-
         AtualizarSelecaoVisual();
     }
 
@@ -148,7 +188,6 @@ public class LevelSelectionMenu : MonoBehaviour
         for (int i = 0; i < fases.Length; i++)
         {
             Transform foto = fases[i].fotoTransform;
-            
             if (foto.childCount > 1)
             {
                 bool isSelecionada = (i == currentIndex);
@@ -197,21 +236,16 @@ public class LevelSelectionMenu : MonoBehaviour
     {
         if (painelBloqueado != null)
         {
-            if (txtMensagemBloqueio != null)
-                txtMensagemBloqueio.text = mensagem;
-
+            if (txtMensagemBloqueio != null) txtMensagemBloqueio.text = mensagem;
             painelBloqueado.SetActive(true);
             painelBloqueadoAberto = true;
         }
-
         inputsBloqueados = false;
     }
 
     public void FecharPainelBloqueado()
     {
-        if (painelBloqueado != null)
-            painelBloqueado.SetActive(false);
-
+        if (painelBloqueado != null) painelBloqueado.SetActive(false);
         painelBloqueadoAberto = false;
         inputsBloqueados = false;
     }
@@ -238,7 +272,6 @@ public class LevelSelectionMenu : MonoBehaviour
         Vector3 posicaoAlvo = new Vector3(fotoAlvo.position.x, fotoAlvo.position.y, fotoAlvo.position.z + zoomOffsetZ);
 
         float progresso = 0f;
-
         while (progresso < 1f)
         {
             progresso += Time.deltaTime * velocidadeZoom;
