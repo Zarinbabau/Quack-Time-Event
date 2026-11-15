@@ -474,6 +474,17 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &511701613 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1682883320058576713, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+  m_PrefabInstance: {fileID: 7716107528542578985}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1 &629596266
 GameObject:
   m_ObjectHideFlags: 0
@@ -555,6 +566,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &906976917 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7620840669093787763, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+  m_PrefabInstance: {fileID: 7716107528542578985}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!114 &910602372 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 249501348561597667, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+  m_PrefabInstance: {fileID: 7716107528542578985}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1 &951493409
 GameObject:
   m_ObjectHideFlags: 0
@@ -675,12 +708,24 @@ MonoBehaviour:
   spriteKeyCima: {fileID: 21300000, guid: 32c9988d4a76f914f90208fe827fe0b7, type: 3}
   spriteKeyBaixo: {fileID: 21300000, guid: 493e98a00a518264091810e0c56bac95, type: 3}
   spriteKeyAcao: {fileID: 21300000, guid: 95687298371cf7841a222730b90049ec, type: 3}
-  soundAcerto: {fileID: 8300000, guid: f1bbe93bf7aa205408169403edd64e4e, type: 3}
+  iconesVidas:
+  - {fileID: 906976917}
+  - {fileID: 511701613}
+  - {fileID: 910602372}
+  spriteVidaCheia: {fileID: 21300000, guid: 7258676435dc86641abe2552e389c864, type: 3}
+  spriteVidaPerdida: {fileID: 21300000, guid: 680dbc0f5669e6b4d8fee442063886aa, type: 3}
+  soundsAcerto:
+  - {fileID: 8300000, guid: f1bbe93bf7aa205408169403edd64e4e, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
   soundErro: {fileID: 8300000, guid: ae6d3de0d584a2e4f96c4198949a2e6c, type: 3}
   tempoParaResponder: 0.7
   errosAtuais: 0
   endGameUI: {fileID: 1090242696}
   barraProgresso: {fileID: 629596267}
+  painelContagem: {fileID: 1861040550}
+  txtContagem: {fileID: 993589610}
+  somContagem: {fileID: 0}
 --- !u!82 &951493413
 AudioSource:
   m_ObjectHideFlags: 0
@@ -795,6 +840,17 @@ MonoBehaviour:
   pontosPara1Estrela: 2500
   pontosPara2Estrelas: 3100
   pontosPara3Estrelas: 3750
+--- !u!114 &993589610 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1716394731944983196, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+  m_PrefabInstance: {fileID: 7716107528542578985}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!114 &1090242696 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
@@ -977,6 +1033,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1861040550 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8235434636444374767, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+  m_PrefabInstance: {fileID: 7716107528542578985}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2011800869
 GameObject:
   m_ObjectHideFlags: 0

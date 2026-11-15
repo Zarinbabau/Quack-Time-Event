@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityEngine.EventSystems; // Necessário para detectar o mouse na UI
+using UnityEngine.EventSystems;
+using TMPro;
 
 public class EndGameUIManager : MonoBehaviour
 {
@@ -11,9 +12,9 @@ public class EndGameUIManager : MonoBehaviour
     public Image fotoResultado;
 
     [Header("Botões (Ordem da Esquerda para Direita)")]
-    public Button btnMenu;
-    public Button btnRepetir;
-    public Button btnProxima;
+    public UnityEngine.UI.Button btnMenu;
+    public UnityEngine.UI.Button btnRepetir;
+    public UnityEngine.UI.Button btnProxima;
 
     [Header("Feedback Visual de Seleção")]
     public Color corNormal = Color.white;
@@ -27,23 +28,31 @@ public class EndGameUIManager : MonoBehaviour
     public Sprite foto2Estrelas;
     public Sprite foto3Estrelas;
 
+    [Header("Aviso de Troféu e Novo Modo Desbloqueado")]
+    [Tooltip("Painel filho dentro da tela de fim de jogo que aparece só quando libera um troféu")]
+    public GameObject painelNovoTrofeu;
+    public TMP_Text txtMensagemTrofeu;
+    [Tooltip("Opcional: Imagem que mostra a arte do troféu conquistado")]
+    public Image imgTrofeuConquistado;
+    public Sprite[] spritesTrofeus = new Sprite[3];
+
     [Header("Configuração de Transição")]
-    public string nomeCenaMenu = "MenuScene"; 
+    public string nomeCenaMenu = "LevelSelectionMenu"; 
     public int indiceProximaFaseNoMenu = 1;   
 
-    private List<Button> botoesAtivos = new List<Button>();
+    private List<UnityEngine.UI.Button> botoesAtivos = new List<UnityEngine.UI.Button>();
     private int indexBotaoAtual = 0;
 
     private void Start()
     {
-        painelFimDeJogo.SetActive(false);
+        if (painelFimDeJogo != null) painelFimDeJogo.SetActive(false);
+        if (painelNovoTrofeu != null) painelNovoTrofeu.SetActive(false);
     }
 
     private void Update()
     {
         if (!painelFimDeJogo.activeSelf || botoesAtivos.Count == 0) return;
 
-        // Navegação pelo Teclado
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             MudarSelecaoBotao(1);
@@ -53,7 +62,6 @@ public class EndGameUIManager : MonoBehaviour
             MudarSelecaoBotao(-1);
         }
 
-        // Confirmação pelo Teclado
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             botoesAtivos[indexBotaoAtual].onClick.Invoke();
@@ -63,8 +71,9 @@ public class EndGameUIManager : MonoBehaviour
     public void MostrarTela(int estrelas)
     {
         painelFimDeJogo.SetActive(true);
-        botoesAtivos.Clear();
+        if (painelNovoTrofeu != null) painelNovoTrofeu.SetActive(false);
 
+        botoesAtivos.Clear();
         botoesAtivos.Add(btnMenu);
         botoesAtivos.Add(btnRepetir);
 
@@ -84,6 +93,22 @@ public class EndGameUIManager : MonoBehaviour
             else if (estrelas == 3) fotoResultado.sprite = foto3Estrelas;
 
             indexBotaoAtual = 2; 
+
+            // Verifica se conquistou todas as estrelas nesta dificuldade
+            if (DifficultyManager.VerificarDesbloqueioTrofeuAtual(out string msgTrofeu))
+            {
+                if (painelNovoTrofeu != null)
+                {
+                    painelNovoTrofeu.SetActive(true);
+                    if (txtMensagemTrofeu != null) txtMensagemTrofeu.text = msgTrofeu;
+
+                    int dif = DifficultyManager.DificuldadeAtual;
+                    if (imgTrofeuConquistado != null && spritesTrofeus != null && dif < spritesTrofeus.Length)
+                    {
+                        imgTrofeuConquistado.sprite = spritesTrofeus[dif];
+                    }
+                }
+            }
         }
 
         ConfigurarEventosMouse();
@@ -92,10 +117,9 @@ public class EndGameUIManager : MonoBehaviour
 
     private void ConfigurarEventosMouse()
     {
-        // Adiciona um leitor de mouse dinamicamente a cada botão visível
         for (int i = 0; i < botoesAtivos.Count; i++)
         {
-            int indexGatilho = i; // Necessário para salvar a posição correta na memória
+            int indexGatilho = i;
             EventTrigger trigger = botoesAtivos[i].gameObject.GetComponent<EventTrigger>();
             
             if (trigger == null) 
@@ -134,7 +158,6 @@ public class EndGameUIManager : MonoBehaviour
         }
     }
 
-    // --- FUNÇÕES DOS BOTÕES ---
     public void VoltarAoMenu() { SceneManager.LoadScene(nomeCenaMenu); }
     public void RepetirFase() { SceneManager.LoadScene(SceneManager.GetActiveScene().name); }
     public void ProximaFase()

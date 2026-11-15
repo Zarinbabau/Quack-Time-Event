@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 [RequireComponent(typeof(AudioSource))]
 public class FaseExtraQTEController : MonoBehaviour
@@ -35,16 +37,24 @@ public class FaseExtraQTEController : MonoBehaviour
     [SerializeField] private Sprite[] keySpritesBaixo = new Sprite[3];
     [SerializeField] private Sprite[] keySpritesAcao = new Sprite[3];
 
+    [Header("Sistema de Vidas (HUD)")]
+    [Tooltip("Arraste as 3 imagens (UI Image) das vidas da esquerda para a direita")]
+    [SerializeField] private Image[] iconesVidas = new Image[3];
+    [SerializeField] private Sprite spriteVidaCheia;
+    [SerializeField] private Sprite spriteVidaPerdida;
+
     [Header("Áudio")]
     [SerializeField] private AudioClip soundCliqueProgresso;
-    [SerializeField] private AudioClip soundAcerto;
+    [Tooltip("Adicione os 3 áudios diferentes de acerto")]
+    [SerializeField] private AudioClip[] soundsAcerto = new AudioClip[3];
     [SerializeField] private AudioClip soundErro;
 
     [Header("Configurações da Fase Extra")]
     [SerializeField] private float tempoSimples = 2.0f;
     [SerializeField] private float tempoRepeticao = 3.0f;
     [SerializeField] private float tempoSequencia = 4.0f;
-    private const int TOTAL_ACERTOS_OBJETIVO = 25;
+    private int totalAcertosObjetivo = 25;
+    private int maxVidas = 3;
 
     [Header("Barra de Progresso")]
     [Tooltip("Arraste o Transform do retângulo da barra (Objeto Pai) aqui")]
@@ -56,15 +66,30 @@ public class FaseExtraQTEController : MonoBehaviour
 
     private int acertosAtuais = 0;
     public int errosAtuais = 0;
-    private int errosSeguidos = 0;
+    private int vidasAtuais = 3;
     private bool jogoAtivo = false;
     private AudioSource audioSource;
     private ScoreManager scoreManager;
+
+    [Header("Contagem Regressiva Inicial")]
+    [Tooltip("Painel/Fundo escuro opcional da contagem (desativa sozinho ao terminar)")]
+    [SerializeField] private GameObject painelContagem;
+    [Tooltip("Texto TextMeshPro que exibirá 3, 2, 1")]
+    [SerializeField] private TMP_Text txtContagem;
+    [Tooltip("Som opcional tocado a cada número (3, 2, 1)")]
+    [SerializeField] private AudioClip somContagem;
 
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
         scoreManager = GetComponent<ScoreManager>();
+
+        var config = DifficultyManager.ObterConfigFaseExtra();
+        tempoSimples = config.tempoSimples;
+        tempoRepeticao = config.tempoRepeticao;
+        tempoSequencia = config.tempoSequencia;
+        totalAcertosObjetivo = config.acertosObjetivo;
+        maxVidas = DifficultyManager.ObterMaxVidas();
     }
 
     private void Start()
@@ -74,7 +99,6 @@ public class FaseExtraQTEController : MonoBehaviour
 
     private IEnumerator RotinaInicio()
     {
-        // === CÓDIGO DA BARRA ===
         if (barraProgresso != null)
         {
             if (escalaOriginalBarra == Vector3.zero) 
@@ -87,17 +111,19 @@ public class FaseExtraQTEController : MonoBehaviour
         OcultarTodasTeclas();
         acertosAtuais = 0;
         errosAtuais = 0;
-        errosSeguidos = 0;
+        vidasAtuais = maxVidas;
+        AtualizarUIVidas();
         jogoAtivo = false;
 
-        yield return new WaitForSeconds(3.0f);
+        yield return StartCoroutine(ContagemRegressivaRotina());
+
         jogoAtivo = true;
         StartCoroutine(RotinaQTE());
     }
 
     private IEnumerator RotinaQTE()
     {
-        while (jogoAtivo && acertosAtuais < TOTAL_ACERTOS_OBJETIVO)
+        while (jogoAtivo && acertosAtuais < totalAcertosObjetivo)
         {
             characterSpriteRenderer.sprite = spriteIdle;
             OcultarTodasTeclas();
@@ -128,10 +154,9 @@ public class FaseExtraQTEController : MonoBehaviour
                 acertosAtuais++;
                 AtualizarBarraProgresso();
 
-                errosSeguidos = 0;
                 scoreManager.AdicionarPontos(tempoGasto, tempoLimiteAtual);
                 characterSpriteRenderer.sprite = ObterSpriteAcao(acaoFinal);
-                TocarSom(soundAcerto);
+                TocarSomAcertoAleatorio();
             }
             else
             {
@@ -140,10 +165,11 @@ public class FaseExtraQTEController : MonoBehaviour
                 TocarSom(soundErro);
 
                 errosAtuais++;
-                errosSeguidos++; 
+                vidasAtuais--;
+                AtualizarUIVidas();
                 scoreManager.RemoverPontos(tempoGasto, tempoLimiteAtual);
 
-                if (errosSeguidos >= 3)
+                if (vidasAtuais <= 0)
                 {
                     yield return new WaitForSeconds(0.5f);
                     Game_Over();
@@ -153,10 +179,24 @@ public class FaseExtraQTEController : MonoBehaviour
 
             yield return new WaitForSeconds(0.5f);
 
-            if (acertosAtuais >= TOTAL_ACERTOS_OBJETIVO)
+            if (acertosAtuais >= totalAcertosObjetivo)
             {
                 FinalizarJogo();
                 yield break;
+            }
+        }
+    }
+
+    private void AtualizarUIVidas()
+    {
+        if (iconesVidas == null) return;
+
+        for (int i = 0; i < iconesVidas.Length; i++)
+        {
+            if (iconesVidas[i] != null)
+            {
+                iconesVidas[i].gameObject.SetActive(i < maxVidas);
+                iconesVidas[i].sprite = (i < vidasAtuais) ? spriteVidaCheia : spriteVidaPerdida;
             }
         }
     }
@@ -339,6 +379,14 @@ public class FaseExtraQTEController : MonoBehaviour
         return false;
     }
 
+    private void TocarSomAcertoAleatorio()
+    {
+        if (soundsAcerto == null || soundsAcerto.Length == 0) return;
+
+        AudioClip clipSorteado = soundsAcerto[Random.Range(0, soundsAcerto.Length)];
+        TocarSom(clipSorteado);
+    }
+
     private void TocarSom(AudioClip clip)
     {
         if (clip != null && audioSource != null) audioSource.PlayOneShot(clip);
@@ -348,9 +396,40 @@ public class FaseExtraQTEController : MonoBehaviour
     {
         if (barraProgresso != null)
         {
-            float porcentagem = (float)acertosAtuais / TOTAL_ACERTOS_OBJETIVO;
+            float porcentagem = (float)acertosAtuais / totalAcertosObjetivo;
             barraProgresso.localScale = new Vector3(escalaOriginalBarra.x * porcentagem, escalaOriginalBarra.y, escalaOriginalBarra.z);
         }
+    }
+
+    private IEnumerator ContagemRegressivaRotina()
+    {
+        if (painelContagem != null) painelContagem.SetActive(true);
+        if (txtContagem != null) txtContagem.gameObject.SetActive(true);
+
+        for (int i = 3; i >= 1; i--)
+        {
+            if (txtContagem != null)
+            {
+                txtContagem.text = i.ToString();
+                txtContagem.transform.localScale = Vector3.one * 1.4f;
+            }
+
+            TocarSom(somContagem);
+
+            float tempoSegundo = 0f;
+            while (tempoSegundo < 1f)
+            {
+                tempoSegundo += Time.deltaTime;
+                if (txtContagem != null)
+                {
+                    txtContagem.transform.localScale = Vector3.Lerp(Vector3.one * 1.4f, Vector3.one, tempoSegundo * 2f);
+                }
+                yield return null;
+            }
+        }
+
+        if (txtContagem != null) txtContagem.gameObject.SetActive(false);
+        if (painelContagem != null) painelContagem.SetActive(false);
     }
 
     public void FinalizarJogo()

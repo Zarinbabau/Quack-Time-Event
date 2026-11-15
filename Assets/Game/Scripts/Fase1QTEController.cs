@@ -1,7 +1,9 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
-[RequireComponent(typeof(AudioSource))] // Garante que o GameObject sempre terá um AudioSource
+[RequireComponent(typeof(AudioSource))]
 public class Fase1QTEController : MonoBehaviour
 {
     public enum QTEAction { Esquerda, Direita, Cima, Baixo, Acao }
@@ -26,35 +28,55 @@ public class Fase1QTEController : MonoBehaviour
     [SerializeField] private Sprite spriteKeyBaixo;
     [SerializeField] private Sprite spriteKeyAcao;
 
+    [Header("Sistema de Vidas (HUD)")]
+    [Tooltip("Arraste as 3 imagens (UI Image) das vidas da esquerda para a direita")]
+    [SerializeField] private Image[] iconesVidas = new Image[3];
+    [SerializeField] private Sprite spriteVidaCheia;
+    [SerializeField] private Sprite spriteVidaPerdida;
+
     [Header("Áudio")]
-    [SerializeField] private AudioClip soundAcerto;
+    [Tooltip("Adicione os 3 áudios diferentes de acerto")]
+    [SerializeField] private AudioClip[] soundsAcerto = new AudioClip[3];
     [SerializeField] private AudioClip soundErro;
 
     [Header("Configurações do QTE")]
-    [SerializeField] private float tempoParaResponder = 2.0f; // tempo Y para acertar
-    private const int TOTAL_ACERTOS_OBJETIVO = 25;
+    [SerializeField] private float tempoParaResponder = 2.0f;
+    private int totalAcertosObjetivo = 25;
+    private int maxVidas = 3;
 
     private int acertosAtuais = 0;
     public int errosAtuais = 0;
+    private int vidasAtuais = 3;
     private bool jogoAtivo = false;
     private bool inputRecebido = false;
     private QTEAction acaoAtual;
     private AudioSource audioSource;
-    private int errosSeguidos = 0;
     
     private ScoreManager scoreManager;
-    
     public EndGameUIManager endGameUI;
 
     [Header("Barra de Progresso")]
     [Tooltip("Arraste o Transform do retângulo da barra aqui")]
     public Transform barraProgresso;
     private Vector3 escalaOriginalBarra;
+
+    [Header("Contagem Regressiva Inicial")]
+    [Tooltip("Painel/Fundo escuro opcional da contagem (desativa sozinho ao terminar)")]
+    [SerializeField] private GameObject painelContagem;
+    [Tooltip("Texto TextMeshPro que exibirá 3, 2, 1")]
+    [SerializeField] private TMP_Text txtContagem;
+    [Tooltip("Som opcional tocado a cada número (3, 2, 1)")]
+    [SerializeField] private AudioClip somContagem;
     
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
-        scoreManager = GetComponent<ScoreManager>(); // Pega a referência
+        scoreManager = GetComponent<ScoreManager>();
+
+        var config = DifficultyManager.ObterConfigFasePadrao("Fase1");
+        tempoParaResponder = config.tempoParaResponder;
+        totalAcertosObjetivo = config.acertosObjetivo;
+        maxVidas = DifficultyManager.ObterMaxVidas();
     }
 
     private void Start()
@@ -71,36 +93,32 @@ public class Fase1QTEController : MonoBehaviour
     {
         if (barraProgresso != null)
         {
-            // Salva o tamanho original da primeira vez que rodar
             if (escalaOriginalBarra == Vector3.zero) 
                 escalaOriginalBarra = barraProgresso.localScale;
                 
-            // Zera o eixo X para a barra começar vazia
             barraProgresso.localScale = new Vector3(0f, escalaOriginalBarra.y, escalaOriginalBarra.z);
         }
 
         characterSpriteRenderer.sprite = spriteIdle;
         keySpriteRenderer.sprite = null;
         acertosAtuais = 0;
-        errosSeguidos = 0; // Garante que comece zerado
+        errosAtuais = 0;
+        vidasAtuais = maxVidas;
+        AtualizarUIVidas();
         jogoAtivo = false;
 
-        Debug.Log("O jogo começará em 3 segundos...");
-        yield return new WaitForSeconds(3.0f);
+        yield return StartCoroutine(ContagemRegressivaRotina());
 
         jogoAtivo = true;
         StartCoroutine(RotinaQTE());
-        
     }
 
     private IEnumerator RotinaQTE()
     {
-        while (jogoAtivo && acertosAtuais < TOTAL_ACERTOS_OBJETIVO)
+        while (jogoAtivo && acertosAtuais < totalAcertosObjetivo)
         {
-            // Volta personagem para Idle
             characterSpriteRenderer.sprite = spriteIdle;
 
-            // Sortear uma das 5 ações válidas
             acaoAtual = (QTEAction)Random.Range(0, 5);
             AtualizarSpriteTecla(acaoAtual);
 
@@ -108,7 +126,6 @@ public class Fase1QTEController : MonoBehaviour
             bool acertou = false;
             float tempoDecorrido = 0f;
 
-            // Aguarda entrada do jogador até o limite de tempo (Y)
             while (tempoDecorrido < tempoParaResponder && !inputRecebido)
             {
                 tempoDecorrido += Time.deltaTime;
@@ -130,7 +147,6 @@ public class Fase1QTEController : MonoBehaviour
                 yield return null;
             }
 
-            // Esconde a tecla após a tentativa
             keySpriteRenderer.sprite = null;
 
             if (acertou && inputRecebido)
@@ -138,48 +154,62 @@ public class Fase1QTEController : MonoBehaviour
                 acertosAtuais++;
                 AtualizarBarraProgresso();
                 
-                errosSeguidos = 0; // Zera o combo de erros ao acertar
-                
-                // Adiciona os pontos enviando o tempo que o jogador gastou e o tempo limite Y
                 scoreManager.AdicionarPontos(tempoDecorrido, tempoParaResponder);
                 
                 characterSpriteRenderer.sprite = ObterSpriteAcao(acaoAtual);
-                TocarSom(soundAcerto);
+                TocarSomAcertoAleatorio();
             }
             else
             {
                 Debug.Log("Errou ou tempo esgotado!");
                 characterSpriteRenderer.sprite = spriteTriste;
                 errosAtuais++;
-                errosSeguidos++; // Soma 1 no combo de erros
+                vidasAtuais--;
+                AtualizarUIVidas();
 
-                // Remove os pontos
                 scoreManager.RemoverPontos(tempoDecorrido, tempoParaResponder);
-
-                // Toca som de erro
                 TocarSom(soundErro);
 
-                // Verifica Game Over
-                if (errosSeguidos >= 3)
+                if (vidasAtuais <= 0)
                 {
-                    yield return new WaitForSeconds(0.5f); // Espera para mostrar o feedback triste
+                    yield return new WaitForSeconds(0.5f);
                     Game_Over();
-                    yield break; // Interrompe a corrotina e encerra a fase
+                    yield break;
                 }
             }
 
-            // Espera meio segundo antes de desativar a imagem e/ou avançar
             yield return new WaitForSeconds(0.5f);
 
-            if (acertosAtuais >= TOTAL_ACERTOS_OBJETIVO)
+            if (acertosAtuais >= totalAcertosObjetivo)
             {
                 FinalizarJogo();
                 yield break;
             }
 
-            // Retorna ao Idle antes de sortear o próximo
             characterSpriteRenderer.sprite = spriteIdle;
         }
+    }
+
+    private void AtualizarUIVidas()
+    {
+        if (iconesVidas == null) return;
+
+        for (int i = 0; i < iconesVidas.Length; i++)
+        {
+            if (iconesVidas[i] != null)
+            {
+                iconesVidas[i].gameObject.SetActive(i < maxVidas);
+                iconesVidas[i].sprite = (i < vidasAtuais) ? spriteVidaCheia : spriteVidaPerdida;
+            }
+        }
+    }
+
+    private void TocarSomAcertoAleatorio()
+    {
+        if (soundsAcerto == null || soundsAcerto.Length == 0) return;
+
+        AudioClip clipSorteado = soundsAcerto[Random.Range(0, soundsAcerto.Length)];
+        TocarSom(clipSorteado);
     }
 
     private void TocarSom(AudioClip clip)
@@ -230,7 +260,6 @@ public class Fase1QTEController : MonoBehaviour
 
     private bool ChecarInputIncorreto()
     {
-        // Se pressionou qualquer tecla de QTE diferente da esperada
         if (Input.GetKeyDown(KeyCode.LeftArrow) && acaoAtual != QTEAction.Esquerda) return true;
         if (Input.GetKeyDown(KeyCode.RightArrow) && acaoAtual != QTEAction.Direita)  return true;
         if (Input.GetKeyDown(KeyCode.UpArrow) && acaoAtual != QTEAction.Cima)     return true;
@@ -240,24 +269,52 @@ public class Fase1QTEController : MonoBehaviour
         return false;
     }
 
-private void AtualizarBarraProgresso()
+    private void AtualizarBarraProgresso()
     {
         if (barraProgresso != null)
         {
-            // Calcula a porcentagem de conclusão (de 0.0 até 1.0)
-            float porcentagem = (float)acertosAtuais / TOTAL_ACERTOS_OBJETIVO;
-            
-            // Aplica a porcentagem apenas na largura (eixo X)
+            float porcentagem = (float)acertosAtuais / totalAcertosObjetivo;
             barraProgresso.localScale = new Vector3(escalaOriginalBarra.x * porcentagem, escalaOriginalBarra.y, escalaOriginalBarra.z);
         }
     }
+
+    private IEnumerator ContagemRegressivaRotina()
+    {
+        if (painelContagem != null) painelContagem.SetActive(true);
+        if (txtContagem != null) txtContagem.gameObject.SetActive(true);
+
+        for (int i = 3; i >= 1; i--)
+        {
+            if (txtContagem != null)
+            {
+                txtContagem.text = i.ToString();
+                txtContagem.transform.localScale = Vector3.one * 1.4f;
+            }
+
+            TocarSom(somContagem);
+
+            float tempoSegundo = 0f;
+            while (tempoSegundo < 1f)
+            {
+                tempoSegundo += Time.deltaTime;
+                if (txtContagem != null)
+                {
+                    txtContagem.transform.localScale = Vector3.Lerp(Vector3.one * 1.4f, Vector3.one, tempoSegundo * 2f);
+                }
+                yield return null;
+            }
+        }
+
+        if (txtContagem != null) txtContagem.gameObject.SetActive(false);
+        if (painelContagem != null) painelContagem.SetActive(false);
+    }
+
     public void FinalizarJogo()
     {
         jogoAtivo = false;
         keySpriteRenderer.sprite = null;
         characterSpriteRenderer.sprite = spriteIdle;
         
-        // Pega as estrelas e manda a UI aparecer
         int estrelasGanhas = scoreManager.FinalizarFaseECalcularEstrelas();
         endGameUI.MostrarTela(estrelasGanhas);
     }
@@ -268,7 +325,6 @@ private void AtualizarBarraProgresso()
         keySpriteRenderer.sprite = null;
         characterSpriteRenderer.sprite = spriteTriste;
         
-        // Manda 0 estrelas para a UI saber que é Game Over
         endGameUI.MostrarTela(0); 
     }
 }

@@ -6,11 +6,28 @@ using UnityEngine.EventSystems;
 using TMPro;
 
 [System.Serializable]
+public class ArteFasePorModo
+{
+    [Tooltip("Imagem da foto ainda não revelada (silhueta / apagada)")]
+    public Sprite spriteSilhueta;
+    [Tooltip("Imagem colorida da foto revelada")]
+    public Sprite spriteRevelada;
+}
+
+[System.Serializable]
 public class DadosFaseMenu
 {
     public string idFase;
     public string nomeDaCena;
     public Transform fotoTransform;
+
+    [Header("Visual da Foto por Dificuldade")]
+    [Tooltip("Arraste o SpriteRenderer da foto na parede")]
+    public SpriteRenderer rendererFoto;
+    [Tooltip("Configure as imagens para: [0] Modo Básico, [1] Modo Rápido, [2] Modo Mestre")]
+    public ArteFasePorModo[] artesPorModo = new ArteFasePorModo[3];
+
+    [Header("Estrelas e Cadeado")]
     public GameObject[] iconesEstrelas = new GameObject[3];
     [Tooltip("Arraste o GameObject da imagem do cadeado desta fase (se houver)")]
     public GameObject iconeCadeado;
@@ -18,15 +35,29 @@ public class DadosFaseMenu
 
 public class LevelSelectionMenu : MonoBehaviour
 {
+    public enum RegraRevelacaoFoto
+    {
+        AoDesbloquearAFase,
+        AoConcluirAFaseComEstrela
+    }
+
     [Header("Configuração das Fases")]
     public DadosFaseMenu[] fases;
+
+    [Tooltip("Define se a foto fica colorida assim que o cadeado abre ou só depois de ganhar 1 estrela na fase")]
+    public RegraRevelacaoFoto quandoRevelarFoto = RegraRevelacaoFoto.AoDesbloquearAFase;
     
     [Header("Configuração de Câmera")]
     public Camera mainCamera;
     public float zoomOffsetZ = -1.5f;
     public float velocidadeZoom = 2f;
 
-    [Header("UI de Fase Bloqueada")]
+    [Header("Seletor de Dificuldade")]
+    public TMP_Text txtDificuldadeAtual;
+    public UnityEngine.UI.Button btnDificuldadeAnterior;
+    public UnityEngine.UI.Button btnProximaDificuldade;
+
+    [Header("UI de Fase / Modo Bloqueado")]
     public GameObject painelBloqueado;
     public TMP_Text txtMensagemBloqueio; 
 
@@ -53,13 +84,27 @@ public class LevelSelectionMenu : MonoBehaviour
         if (btnVoltar != null)
         {
             btnVoltar.onClick.AddListener(VoltarAoMenuPrincipal);
-            ConfigurarHoverBotaoVoltar();
+            ConfigurarHoverBotao(btnVoltar);
+        }
+
+        if (btnDificuldadeAnterior != null)
+        {
+            btnDificuldadeAnterior.onClick.AddListener(() => AlterarDificuldade(-1));
+            ConfigurarHoverBotao(btnDificuldadeAnterior);
+        }
+
+        if (btnProximaDificuldade != null)
+        {
+            btnProximaDificuldade.onClick.AddListener(() => AlterarDificuldade(1));
+            ConfigurarHoverBotao(btnProximaDificuldade);
         }
 
         ultimaPosicaoMouse = Input.mousePosition;
 
+        AtualizarUIDificuldade();
         CarregarEstrelasVisuais();
         VerificarCadeados();
+        AtualizarFotosVisuais();
         AtualizarSelecaoVisual();
 
         if (PlayerPrefs.HasKey("AutoProgression_ToIndex"))
@@ -70,11 +115,55 @@ public class LevelSelectionMenu : MonoBehaviour
         }
     }
 
-    private void ConfigurarHoverBotaoVoltar()
+    public void AlterarDificuldade(int direcao)
     {
-        EventTrigger trigger = btnVoltar.gameObject.GetComponent<EventTrigger>();
+        if (inputsBloqueados || painelBloqueadoAberto) return;
+
+        int novaDif = Mathf.Clamp(DifficultyManager.DificuldadeAtual + direcao, 0, 2);
+        if (novaDif == DifficultyManager.DificuldadeAtual) return;
+
+        if (novaDif > DifficultyManager.DificuldadeMaximaDesbloqueada)
+        {
+            string modoAnterior = DifficultyManager.ObterNomeDificuldade(novaDif - 1);
+            string modoAlvo = DifficultyManager.ObterNomeDificuldade(novaDif);
+            ExibirAvisoBloqueio($"{modoAlvo} Bloqueado!\nConquiste 3 estrelas em todas as 4 fases do {modoAnterior} para liberar.");
+            return;
+        }
+
+        DifficultyManager.DificuldadeAtual = novaDif;
+        AtualizarUIDificuldade();
+        CarregarEstrelasVisuais();
+        VerificarCadeados();
+        AtualizarFotosVisuais();
+    }
+
+    private void AtualizarUIDificuldade()
+    {
+        int dif = DifficultyManager.DificuldadeAtual;
+
+        if (txtDificuldadeAtual != null)
+            txtDificuldadeAtual.text = DifficultyManager.ObterNomeDificuldade(dif);
+
+        if (btnDificuldadeAnterior != null)
+        {
+            bool podeVoltar = dif > 0;
+            if (!podeVoltar) ResetarVisualBotao(btnDificuldadeAnterior);
+            btnDificuldadeAnterior.gameObject.SetActive(podeVoltar);
+        }
+
+        if (btnProximaDificuldade != null)
+        {
+            bool temProximo = dif < 2;
+            if (!temProximo) ResetarVisualBotao(btnProximaDificuldade);
+            btnProximaDificuldade.gameObject.SetActive(temProximo);
+        }
+    }
+
+    private void ConfigurarHoverBotao(UnityEngine.UI.Button botao)
+    {
+        EventTrigger trigger = botao.gameObject.GetComponent<EventTrigger>();
         if (trigger == null)
-            trigger = btnVoltar.gameObject.AddComponent<EventTrigger>();
+            trigger = botao.gameObject.AddComponent<EventTrigger>();
 
         trigger.triggers.Clear();
 
@@ -83,27 +172,33 @@ public class LevelSelectionMenu : MonoBehaviour
         {
             if (!inputsBloqueados && !painelBloqueadoAberto)
             {
-                btnVoltar.image.color = corBotaoSelecionado;
-                btnVoltar.transform.localScale = escalaBotaoSelecionado;
+                botao.image.color = corBotaoSelecionado;
+                botao.transform.localScale = escalaBotaoSelecionado;
             }
         });
 
         EventTrigger.Entry exit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
         exit.callback.AddListener((data) =>
         {
-            btnVoltar.image.color = corBotaoNormal;
-            btnVoltar.transform.localScale = escalaBotaoNormal;
+            ResetarVisualBotao(botao);
         });
 
         trigger.triggers.Add(enter);
         trigger.triggers.Add(exit);
     }
 
+    private void ResetarVisualBotao(UnityEngine.UI.Button botao)
+    {
+        if (botao == null) return;
+        botao.image.color = corBotaoNormal;
+        botao.transform.localScale = escalaBotaoNormal;
+    }
+
     private void CarregarEstrelasVisuais()
     {
         foreach (var fase in fases)
         {
-            int estrelasGanhas = PlayerPrefs.GetInt(fase.idFase + "_Estrelas", 0);
+            int estrelasGanhas = DifficultyManager.ObterEstrelasFase(fase.idFase);
             for (int i = 0; i < 3; i++)
             {
                 if (fase.iconesEstrelas[i] != null)
@@ -112,23 +207,57 @@ public class LevelSelectionMenu : MonoBehaviour
         }
     }
 
+    private bool FaseEstaDesbloqueada(int index)
+    {
+        if (index == 0) return true;
+        if (index == 1) return DifficultyManager.ObterEstrelasFase(fases[0].idFase) >= 1;
+        if (index == 2) return DifficultyManager.ObterEstrelasFase(fases[1].idFase) >= 1;
+        if (index == 3)
+        {
+            int e1 = DifficultyManager.ObterEstrelasFase(fases[0].idFase);
+            int e2 = DifficultyManager.ObterEstrelasFase(fases[1].idFase);
+            int e3 = DifficultyManager.ObterEstrelasFase(fases[2].idFase);
+            return e1 >= 3 && e2 >= 3 && e3 >= 3;
+        }
+        return false;
+    }
+
     private void VerificarCadeados()
     {
-        if (fases.Length > 0 && fases[0].iconeCadeado != null)
-            fases[0].iconeCadeado.SetActive(false);
-
-        if (fases.Length > 1 && fases[1].iconeCadeado != null)
-            fases[1].iconeCadeado.SetActive(PlayerPrefs.GetInt(fases[0].idFase + "_Estrelas", 0) < 1);
-
-        if (fases.Length > 2 && fases[2].iconeCadeado != null)
-            fases[2].iconeCadeado.SetActive(PlayerPrefs.GetInt(fases[1].idFase + "_Estrelas", 0) < 1);
-
-        if (fases.Length > 3 && fases[3].iconeCadeado != null)
+        for (int i = 0; i < fases.Length; i++)
         {
-            int e1 = PlayerPrefs.GetInt(fases[0].idFase + "_Estrelas", 0);
-            int e2 = PlayerPrefs.GetInt(fases[1].idFase + "_Estrelas", 0);
-            int e3 = PlayerPrefs.GetInt(fases[2].idFase + "_Estrelas", 0);
-            fases[3].iconeCadeado.SetActive(e1 < 3 || e2 < 3 || e3 < 3);
+            if (fases[i].iconeCadeado != null)
+            {
+                fases[i].iconeCadeado.SetActive(!FaseEstaDesbloqueada(i));
+            }
+        }
+    }
+
+    private void AtualizarFotosVisuais()
+    {
+        int dif = DifficultyManager.DificuldadeAtual;
+
+        for (int i = 0; i < fases.Length; i++)
+        {
+            if (fases[i].rendererFoto == null) continue;
+            if (fases[i].artesPorModo == null || fases[i].artesPorModo.Length == 0) continue;
+
+            int indexModo = Mathf.Clamp(dif, 0, fases[i].artesPorModo.Length - 1);
+            ArteFasePorModo arteAtual = fases[i].artesPorModo[indexModo];
+
+            // Caso ainda não tenha colocado artes para os modos 1 ou 2, usa as do Modo 0 para não sumir
+            if (arteAtual.spriteRevelada == null && arteAtual.spriteSilhueta == null)
+                arteAtual = fases[i].artesPorModo[0];
+
+            bool revelada = (quandoRevelarFoto == RegraRevelacaoFoto.AoDesbloquearAFase)
+                ? FaseEstaDesbloqueada(i)
+                : DifficultyManager.ObterEstrelasFase(fases[i].idFase) >= 1;
+
+            Sprite spriteEscolhido = revelada ? arteAtual.spriteRevelada : arteAtual.spriteSilhueta;
+            if (spriteEscolhido != null)
+            {
+                fases[i].rendererFoto.sprite = spriteEscolhido;
+            }
         }
     }
 
@@ -136,7 +265,8 @@ public class LevelSelectionMenu : MonoBehaviour
     {
         if (painelBloqueadoAberto)
         {
-            if (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Space) || 
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || 
+                Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Escape) || 
                 Input.GetMouseButtonDown(0)) 
             {
                 FecharPainelBloqueado();
@@ -151,6 +281,9 @@ public class LevelSelectionMenu : MonoBehaviour
             VoltarAoMenuPrincipal();
             return;
         }
+
+        if (Input.GetKeyDown(KeyCode.Q)) AlterarDificuldade(-1);
+        else if (Input.GetKeyDown(KeyCode.E)) AlterarDificuldade(1);
 
         // --- SISTEMA DO MOUSE ---
         bool moveuMouse = Input.mousePosition != ultimaPosicaoMouse;
@@ -246,33 +379,16 @@ public class LevelSelectionMenu : MonoBehaviour
 
     private bool TentarEntrarNaFase()
     {
-        if (currentIndex == 1) 
+        if (!FaseEstaDesbloqueada(currentIndex))
         {
-            if (PlayerPrefs.GetInt(fases[0].idFase + "_Estrelas", 0) < 1)
-            {
+            if (currentIndex == 1)
                 ExibirAvisoBloqueio("Fase 2 Bloqueada!\nConquiste pelo menos 1 estrela na Fase 1 para liberar.");
-                return false;
-            }
-        }
-        else if (currentIndex == 2) 
-        {
-            if (PlayerPrefs.GetInt(fases[1].idFase + "_Estrelas", 0) < 1)
-            {
+            else if (currentIndex == 2)
                 ExibirAvisoBloqueio("Fase 3 Bloqueada!\nConquiste pelo menos 1 estrela na Fase 2 para liberar.");
-                return false;
-            }
-        }
-        else if (currentIndex == 3) 
-        {
-            int e1 = PlayerPrefs.GetInt(fases[0].idFase + "_Estrelas", 0);
-            int e2 = PlayerPrefs.GetInt(fases[1].idFase + "_Estrelas", 0);
-            int e3 = PlayerPrefs.GetInt(fases[2].idFase + "_Estrelas", 0);
-
-            if (e1 < 3 || e2 < 3 || e3 < 3)
-            {
+            else if (currentIndex == 3)
                 ExibirAvisoBloqueio("Fase Extra Bloqueada!\nÉ necessário conseguir 3 estrelas nas Fases 1, 2 e 3 para liberar esta fase.");
-                return false;
-            }
+
+            return false;
         }
 
         inputsBloqueados = true;

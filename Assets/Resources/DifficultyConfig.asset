@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e05eecac2637775459c06cab83f0598a, type: 3}
+  m_Name: DifficultyConfig
+  m_EditorClassIdentifier: Assembly-CSharp::DifficultyConfig
+  modoBasico:
+    nomeDoModo: "Modo B\xE1sico"
+    maxVidas: 3
+    fase1:
+      acertosObjetivo: 13
+      pontosPara1Estrela: 500
+      pontosPara2Estrelas: 750
+      pontosPara3Estrelas: 1500
+      tempoParaResponder: 0.7
+    fase2:
+      acertosObjetivo: 13
+      pontosPara1Estrela: 500
+      pontosPara2Estrelas: 750
+      pontosPara3Estrelas: 1500
+      tempoParaResponder: 1.2
+    fase3:
+      acertosObjetivo: 13
+      pontosPara1Estrela: 500
+      pontosPara2Estrelas: 750
+      pontosPara3Estrelas: 1500
+      tempoParaResponder: 2
+    faseExtra:
+      acertosObjetivo: 15
+      pontosPara1Estrela: 500
+      pontosPara2Estrelas: 750
+      pontosPara3Estrelas: 1500
+      tempoSimples: 0.7
+      tempoRepeticao: 1.2
+      tempoSequencia: 2
+  modoRapido:
+    nomeDoModo: Modo Temporal
+    maxVidas: 3
+    fase1:
+      acertosObjetivo: 15
+      pontosPara1Estrela: 570
+      pontosPara2Estrelas: 850
+      pontosPara3Estrelas: 1700
+      tempoParaResponder: 0.5
+    fase2:
+      acertosObjetivo: 15
+      pontosPara1Estrela: 570
+      pontosPara2Estrelas: 850
+      pontosPara3Estrelas: 1700
+      tempoParaResponder: 0.8
+    fase3:
+      acertosObjetivo: 15
+      pontosPara1Estrela: 570
+      pontosPara2Estrelas: 850
+      pontosPara3Estrelas: 1700
+      tempoParaResponder: 1.5
+    faseExtra:
+      acertosObjetivo: 15
+      pontosPara1Estrela: 570
+      pontosPara2Estrelas: 850
+      pontosPara3Estrelas: 1700
+      tempoSimples: 0.5
+      tempoRepeticao: 0.8
+      tempoSequencia: 1.5
+  modoMestre:
+    nomeDoModo: Modo PATO PUNK
+    maxVidas: 2
+    fase1:
+      acertosObjetivo: 25
+      pontosPara1Estrela: 2500
+      pontosPara2Estrelas: 3100
+      pontosPara3Estrelas: 3750
+      tempoParaResponder: 0.3
+    fase2:
+      acertosObjetivo: 25
+      pontosPara1Estrela: 2500
+      pontosPara2Estrelas: 3100
+      pontosPara3Estrelas: 3750
+      tempoParaResponder: 0.6
+    fase3:
+      acertosObjetivo: 25
+      pontosPara1Estrela: 2500
+      pontosPara2Estrelas: 3100
+      pontosPara3Estrelas: 3750
+      tempoParaResponder: 1.2
+    faseExtra:
+      acertosObjetivo: 25
+      pontosPara1Estrela: 2500
+      pontosPara2Estrelas: 3100
+      pontosPara3Estrelas: 3750
+      tempoSimples: 0.3
+      tempoRepeticao: 0.6
+      tempoSequencia: 1.2

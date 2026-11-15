@@ -595,6 +595,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 900720042d56a794cb4c6658544625f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EndGameUIManager
+--- !u!114 &455468606 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1716394731944983196, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+  m_PrefabInstance: {fileID: 455468604}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &455468607 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8235434636444374767, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+  m_PrefabInstance: {fileID: 455468604}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &455468608 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7620840669093787763, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+  m_PrefabInstance: {fileID: 455468604}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!114 &455468609 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1682883320058576713, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+  m_PrefabInstance: {fileID: 455468604}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+--- !u!114 &455468610 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 249501348561597667, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+  m_PrefabInstance: {fileID: 455468604}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1 &508803587
 GameObject:
   m_ObjectHideFlags: 0
@@ -1384,13 +1433,25 @@ MonoBehaviour:
   spriteKeyCima: {fileID: 21300000, guid: 32c9988d4a76f914f90208fe827fe0b7, type: 3}
   spriteKeyBaixo: {fileID: 21300000, guid: 493e98a00a518264091810e0c56bac95, type: 3}
   spriteKeyAcao: {fileID: 21300000, guid: 95687298371cf7841a222730b90049ec, type: 3}
+  iconesVidas:
+  - {fileID: 455468608}
+  - {fileID: 455468609}
+  - {fileID: 455468610}
+  spriteVidaCheia: {fileID: 21300000, guid: 7258676435dc86641abe2552e389c864, type: 3}
+  spriteVidaPerdida: {fileID: 21300000, guid: 680dbc0f5669e6b4d8fee442063886aa, type: 3}
   soundCliqueProgresso: {fileID: 8300000, guid: 36b3b2e86f45c6643865ecc7c6ed784e, type: 3}
-  soundAcerto: {fileID: 8300000, guid: f1bbe93bf7aa205408169403edd64e4e, type: 3}
+  soundsAcerto:
+  - {fileID: 8300000, guid: f1bbe93bf7aa205408169403edd64e4e, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
   soundErro: {fileID: 8300000, guid: ae6d3de0d584a2e4f96c4198949a2e6c, type: 3}
   tempoParaResponder: 2
   barraProgresso: {fileID: 1185529545}
   endGameUI: {fileID: 455468605}
   errosAtuais: 0
+  painelContagem: {fileID: 455468607}
+  txtContagem: {fileID: 455468606}
+  somContagem: {fileID: 0}
 --- !u!114 &1589661917
 MonoBehaviour:
   m_ObjectHideFlags: 0
