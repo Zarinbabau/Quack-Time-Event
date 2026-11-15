@@ -12,6 +12,7 @@ public class MainMenuController : MonoBehaviour
     public Button btnJogar;
     public Button btnTrofeus;
     public Button btnComoJogar;
+    public Button btnSair;
 
     [Header("Feedback Visual de Seleção")]
     public Color corNormal = Color.white;
@@ -51,11 +52,13 @@ public class MainMenuController : MonoBehaviour
         botoes.Add(btnJogar);
         botoes.Add(btnTrofeus);
         botoes.Add(btnComoJogar);
+        if (btnSair != null) botoes.Add(btnSair);
 
         // Conecta os cliques automaticamente via código
         btnJogar.onClick.AddListener(() => IniciarTransicao(triggerJogar));
         btnTrofeus.onClick.AddListener(() => IniciarTransicao(triggerTrofeus));
         btnComoJogar.onClick.AddListener(() => IniciarTransicao(triggerComoJogar));
+        if (btnSair != null) btnSair.onClick.AddListener(FecharJogo);
 
         ConfigurarEventosMouse();
         AtualizarFeedbackVisual();
@@ -76,7 +79,7 @@ public class MainMenuController : MonoBehaviour
         }
 
         // Confirmação com Enter ou Espaço
-        if (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Space))
         {
             botoes[indexAtual].onClick.Invoke();
         }
@@ -138,12 +141,26 @@ public class MainMenuController : MonoBehaviour
         inputsBloqueados = true;
         TocarSom(somConfirmar);
 
-        // Esconde o logo e os botões para deixar a visão limpa durante a animação
         if (containerMenuUI != null)
             containerMenuUI.SetActive(false);
 
         if (casaAnimator != null)
             casaAnimator.SetTrigger(nomeTrigger);
+    }
+
+    public void FecharJogo()
+    {
+        if (inputsBloqueados) return;
+
+        inputsBloqueados = true;
+        TocarSom(somConfirmar);
+
+        Application.Quit();
+
+        // Faz o botão também parar o modo Play quando você estiver testando dentro da Unity
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
     }
 
     private void TocarSom(AudioClip clip)

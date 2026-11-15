@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 
 [System.Serializable]
@@ -28,6 +30,14 @@ public class LevelSelectionMenu : MonoBehaviour
     public GameObject painelBloqueado;
     public TMP_Text txtMensagemBloqueio; 
 
+    [Header("Voltar ao Menu Principal")]
+    public string cenaMenuPrincipal = "MainMenu";
+    public UnityEngine.UI.Button btnVoltar;
+    public Color corBotaoNormal = Color.white;
+    public Color corBotaoSelecionado = new Color(1f, 0.8f, 0.2f);
+    public Vector3 escalaBotaoNormal = Vector3.one;
+    public Vector3 escalaBotaoSelecionado = new Vector3(1.1f, 1.1f, 1.1f);
+
     private int currentIndex = 0;
     private bool inputsBloqueados = false;
     private bool painelBloqueadoAberto = false;
@@ -39,6 +49,12 @@ public class LevelSelectionMenu : MonoBehaviour
         
         if (painelBloqueado != null) 
             painelBloqueado.SetActive(false);
+
+        if (btnVoltar != null)
+        {
+            btnVoltar.onClick.AddListener(VoltarAoMenuPrincipal);
+            ConfigurarHoverBotaoVoltar();
+        }
 
         ultimaPosicaoMouse = Input.mousePosition;
 
@@ -52,6 +68,35 @@ public class LevelSelectionMenu : MonoBehaviour
             PlayerPrefs.DeleteKey("AutoProgression_ToIndex"); 
             StartCoroutine(RotinaAutoProgresso(indexAlvo));
         }
+    }
+
+    private void ConfigurarHoverBotaoVoltar()
+    {
+        EventTrigger trigger = btnVoltar.gameObject.GetComponent<EventTrigger>();
+        if (trigger == null)
+            trigger = btnVoltar.gameObject.AddComponent<EventTrigger>();
+
+        trigger.triggers.Clear();
+
+        EventTrigger.Entry enter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+        enter.callback.AddListener((data) =>
+        {
+            if (!inputsBloqueados && !painelBloqueadoAberto)
+            {
+                btnVoltar.image.color = corBotaoSelecionado;
+                btnVoltar.transform.localScale = escalaBotaoSelecionado;
+            }
+        });
+
+        EventTrigger.Entry exit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
+        exit.callback.AddListener((data) =>
+        {
+            btnVoltar.image.color = corBotaoNormal;
+            btnVoltar.transform.localScale = escalaBotaoNormal;
+        });
+
+        trigger.triggers.Add(enter);
+        trigger.triggers.Add(exit);
     }
 
     private void CarregarEstrelasVisuais()
@@ -101,6 +146,12 @@ public class LevelSelectionMenu : MonoBehaviour
 
         if (inputsBloqueados) return;
 
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Backspace))
+        {
+            VoltarAoMenuPrincipal();
+            return;
+        }
+
         // --- SISTEMA DO MOUSE ---
         bool moveuMouse = Input.mousePosition != ultimaPosicaoMouse;
         ultimaPosicaoMouse = Input.mousePosition;
@@ -110,15 +161,12 @@ public class LevelSelectionMenu : MonoBehaviour
             VerificarMouseSobreFase();
         }
 
-        // Lógica de Clique do Mouse
         if (Input.GetMouseButtonDown(0))
         {
-            // Compensa a distância da câmera para garantir que o clique vá até a foto
             Vector3 mousePos = Input.mousePosition;
             mousePos.z = Mathf.Abs(mainCamera.transform.position.z);
             Vector2 posicaoMouseMundo = mainCamera.ScreenToWorldPoint(mousePos);
             
-            // Verifica qual Collider2D está exatamente nesse ponto
             Collider2D hit = Physics2D.OverlapPoint(posicaoMouseMundo);
 
             if (hit != null)
@@ -144,7 +192,7 @@ public class LevelSelectionMenu : MonoBehaviour
             MudarSelecao(-1);
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             TentarEntrarNaFase();
         }
@@ -248,6 +296,13 @@ public class LevelSelectionMenu : MonoBehaviour
         if (painelBloqueado != null) painelBloqueado.SetActive(false);
         painelBloqueadoAberto = false;
         inputsBloqueados = false;
+    }
+
+    public void VoltarAoMenuPrincipal()
+    {
+        if (inputsBloqueados) return;
+        inputsBloqueados = true;
+        SceneManager.LoadScene(cenaMenuPrincipal);
     }
 
     private IEnumerator RotinaAutoProgresso(int indexAlvo)
