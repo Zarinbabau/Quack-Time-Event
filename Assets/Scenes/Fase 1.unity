@@ -716,8 +716,8 @@ MonoBehaviour:
   spriteVidaPerdida: {fileID: 21300000, guid: 680dbc0f5669e6b4d8fee442063886aa, type: 3}
   soundsAcerto:
   - {fileID: 8300000, guid: f1bbe93bf7aa205408169403edd64e4e, type: 3}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 8300000, guid: e3f0c8cbff933494e9723dd1f6f30339, type: 3}
+  - {fileID: 8300000, guid: a2faa78a2f1b9fc42941173d3fc5590e, type: 3}
   soundErro: {fileID: 8300000, guid: ae6d3de0d584a2e4f96c4198949a2e6c, type: 3}
   tempoParaResponder: 0.7
   errosAtuais: 0
@@ -725,7 +725,7 @@ MonoBehaviour:
   barraProgresso: {fileID: 629596267}
   painelContagem: {fileID: 1861040550}
   txtContagem: {fileID: 993589610}
-  somContagem: {fileID: 0}
+  somContagem: {fileID: 8300000, guid: cef140f1e1b08a64793d7027993f989e, type: 3}
 --- !u!82 &951493413
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1307,6 +1307,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: indiceProximaFaseNoMenu
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3301791770068668589, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
       propertyPath: m_Pivot.x
       value: 0
