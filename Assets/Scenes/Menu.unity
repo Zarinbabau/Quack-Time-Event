@@ -3127,7 +3127,7 @@ MonoBehaviour:
   cenaComoJogar: ComoJogar
   audioSource: {fileID: 1429196212}
   somNavegacao: {fileID: 0}
-  somConfirmar: {fileID: 0}
+  somConfirmar: {fileID: 8300000, guid: 1faae4156353ca04d913189d34ea8909, type: 3}
 --- !u!95 &1429196214
 Animator:
   serializedVersion: 7
@@ -3457,7 +3457,7 @@ Transform:
   m_GameObject: {fileID: 1699493752}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.70710576, z: -0, w: 0.7071079}
-  m_LocalPosition: {x: 26.2, y: 0.0441, z: -11.8539}
+  m_LocalPosition: {x: 26.2, y: 0, z: -11.85}
   m_LocalScale: {x: 29.487823, y: 24.176792, z: 0.5753505}
   m_ConstrainProportionsScale: 0
   m_Children:

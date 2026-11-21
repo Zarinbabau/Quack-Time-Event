@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DifficultyConfig
   m_EditorClassIdentifier: Assembly-CSharp::DifficultyConfig
   modoBasico:
-    nomeDoModo: "Modo B\xE1sico"
+    nomeDoModo: "B\xE1sico"
     maxVidas: 3
     fase1:
       acertosObjetivo: 13
@@ -42,7 +42,7 @@ MonoBehaviour:
       tempoRepeticao: 1.2
       tempoSequencia: 2
   modoRapido:
-    nomeDoModo: Modo Temporal
+    nomeDoModo: Temporal
     maxVidas: 3
     fase1:
       acertosObjetivo: 15
@@ -71,14 +71,14 @@ MonoBehaviour:
       tempoRepeticao: 0.8
       tempoSequencia: 1.5
   modoMestre:
-    nomeDoModo: Modo PATO PUNK
+    nomeDoModo: PATO PUNK
     maxVidas: 2
     fase1:
       acertosObjetivo: 25
       pontosPara1Estrela: 2500
       pontosPara2Estrelas: 3100
       pontosPara3Estrelas: 3750
-      tempoParaResponder: 0.3
+      tempoParaResponder: 0.4
     fase2:
       acertosObjetivo: 25
       pontosPara1Estrela: 2500

@@ -34,7 +34,7 @@ public class DadosFaseMenu
     [Tooltip("Arraste os 3 GameObjects filhos que colorem a foto a cada estrela")]
     public GameObject[] iconesEstrelas = new GameObject[3];
 
-    [Tooltip("Defina os 3 sprites coloridos para: [0] Modo Básico, [1] Modo Temporal, [2] Modo PATO PUNK")]
+    [Tooltip("Defina os 3 sprites coloridos para: [0] Básico, [1] Temporal, [2] PATO PUNK")]
     public SpritesEstrelasPorModo[] spritesEstrelasPorModo = new SpritesEstrelasPorModo[3];
 
     [Header("Bloqueio")]
