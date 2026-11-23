@@ -326,8 +326,7 @@ public class LevelSelectionMenu : MonoBehaviour
     {
         if (painelBloqueadoAberto)
         {
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || 
-                Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Escape) || 
+            if (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Space)  || 
                 Input.GetMouseButtonDown(0)) 
             {
                 FecharPainelBloqueado();
@@ -386,7 +385,7 @@ public class LevelSelectionMenu : MonoBehaviour
             MudarSelecao(-1);
         }
 
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             TentarEntrarNaFase();
         }

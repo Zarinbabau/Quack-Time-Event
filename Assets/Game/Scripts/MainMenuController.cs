@@ -79,7 +79,7 @@ public class MainMenuController : MonoBehaviour
         }
 
         // Confirmação com Enter ou Espaço
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Space))
         {
             botoes[indexAtual].onClick.Invoke();
         }

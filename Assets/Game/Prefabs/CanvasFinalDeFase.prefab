@@ -520,7 +520,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!210 &1474047912559890616
@@ -855,8 +855,8 @@ RectTransform:
   - {fileID: 5670456857437644030}
   - {fileID: 3160146468141482662}
   - {fileID: 3493234416395421853}
-  - {fileID: 3827348421391306705}
   - {fileID: 7364601449911839492}
+  - {fileID: 3827348421391306705}
   - {fileID: 3528528386380269331}
   - {fileID: 2453265444780729995}
   m_Father: {fileID: 0}
@@ -958,9 +958,9 @@ MonoBehaviour:
   txtMensagemTrofeu: {fileID: 1091915880243428831}
   imgTrofeuConquistado: {fileID: 1483034463493794636}
   spritesTrofeus:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 21300000, guid: bfb115bc821792745b94426a65fd2ae5, type: 3}
+  - {fileID: 21300000, guid: 2a8afe890351b5d43bdc8854e4583e6d, type: 3}
+  - {fileID: 21300000, guid: c00c7483282cc0d4f8efab9a898c9924, type: 3}
   nomeCenaMenu: "Sele\xE7\xE3o de fase"
   indiceProximaFaseNoMenu: 1
 --- !u!1 &6595097606586686166
@@ -1128,7 +1128,7 @@ RectTransform:
   m_GameObject: {fileID: 7341560216506262452}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 16.309193, y: 10.296908, z: 1}
+  m_LocalScale: {x: 19.19643, y: 10.683043, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2453265444780729995}
@@ -1166,7 +1166,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b8515f76a13ce70489a4fb016095554a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2d3fd85489231ff4abefd6f8bac22adf, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1312,7 +1312,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -134}
+  m_AnchoredPosition: {x: 0, y: -194}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4402339393321722104
