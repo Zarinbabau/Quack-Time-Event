@@ -5,6 +5,14 @@ using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using TMPro;
 
+[System.Serializable]
+public class FotosResultadoPorModo
+{
+    public Sprite foto1Estrela;
+    public Sprite foto2Estrelas;
+    public Sprite foto3Estrelas;
+}
+
 public class EndGameUIManager : MonoBehaviour
 {
     [Header("Painel Principal")]
@@ -24,9 +32,8 @@ public class EndGameUIManager : MonoBehaviour
 
     [Header("Fotos/Sprites de Resultado")]
     public Sprite fotoDerrota;
-    public Sprite foto1Estrela;
-    public Sprite foto2Estrelas;
-    public Sprite foto3Estrelas;
+    [Tooltip("Configure as fotos de vitória para: [0] Modo Básico, [1] Modo Temporal, [2] Modo PATO PUNK")]
+    public FotosResultadoPorModo[] fotosPorModo = new FotosResultadoPorModo[3];
 
     [Header("Aviso de Troféu e Novo Modo Desbloqueado")]
     [Tooltip("Painel filho dentro da tela de fim de jogo que aparece só quando libera um troféu")]
@@ -108,9 +115,11 @@ public class EndGameUIManager : MonoBehaviour
             btnProxima.gameObject.SetActive(true);
             botoesAtivos.Add(btnProxima);
             
-            if (estrelas == 1) fotoResultado.sprite = foto1Estrela;
-            else if (estrelas == 2) fotoResultado.sprite = foto2Estrelas;
-            else if (estrelas == 3) fotoResultado.sprite = foto3Estrelas;
+            Sprite spriteVitoria = ObterSpriteVitoria(estrelas);
+            if (spriteVitoria != null)
+            {
+                fotoResultado.sprite = spriteVitoria;
+            }
 
             indexBotaoAtual = 2; 
 
@@ -136,6 +145,31 @@ public class EndGameUIManager : MonoBehaviour
 
         ConfigurarEventosMouse();
         AtualizarFeedbackVisual();
+    }
+
+    private Sprite ObterSpriteVitoria(int estrelas)
+    {
+        if (fotosPorModo == null || fotosPorModo.Length == 0) return null;
+
+        int dif = Mathf.Clamp(DifficultyManager.DificuldadeAtual, 0, fotosPorModo.Length - 1);
+        Sprite spriteEscolhido = ExtrairSpritePorEstrelas(fotosPorModo[dif], estrelas);
+
+        // Fallback para o Modo Básico [0] caso os modos 1 ou 2 ainda estejam sem arte atribuída
+        if (spriteEscolhido == null && dif != 0)
+        {
+            spriteEscolhido = ExtrairSpritePorEstrelas(fotosPorModo[0], estrelas);
+        }
+
+        return spriteEscolhido;
+    }
+
+    private Sprite ExtrairSpritePorEstrelas(FotosResultadoPorModo grupo, int estrelas)
+    {
+        if (grupo == null) return null;
+        if (estrelas == 1) return grupo.foto1Estrela;
+        if (estrelas == 2) return grupo.foto2Estrelas;
+        if (estrelas == 3) return grupo.foto3Estrelas;
+        return null;
     }
 
     public void FecharPainelNovoTrofeu()

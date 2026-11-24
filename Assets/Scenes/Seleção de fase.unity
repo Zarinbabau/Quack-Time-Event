@@ -2940,13 +2940,13 @@ MonoBehaviour:
       - {fileID: 21300000, guid: 4188af8017ac66f4e90cbec13b02ca01, type: 3}
       - {fileID: 21300000, guid: f90526fa73ebf274dbf8e71765f071fa, type: 3}
     - sprites:
-      - {fileID: 0}
-      - {fileID: 0}
-      - {fileID: 0}
+      - {fileID: 21300000, guid: c8b79c32b9e204c49b9bf1a2334c002b, type: 3}
+      - {fileID: 21300000, guid: a348ae1e3c55daf408175d2365c31d75, type: 3}
+      - {fileID: 21300000, guid: 5141ea8eb5bc10d4cb620d6c77d7b55b, type: 3}
     - sprites:
-      - {fileID: 0}
-      - {fileID: 0}
-      - {fileID: 0}
+      - {fileID: 21300000, guid: b81744e453fdd204b954b639e756a76d, type: 3}
+      - {fileID: 21300000, guid: 7c0855696f255ee4ab3d72b240be7bf2, type: 3}
+      - {fileID: 21300000, guid: ce6100e657521c7408ec28f0a0103f7d, type: 3}
     iconeCadeado: {fileID: 378750691}
   - idFase: Fase2
     nomeDaCena: Fase 2
@@ -2958,17 +2958,17 @@ MonoBehaviour:
     - {fileID: 458065125}
     spritesEstrelasPorModo:
     - sprites:
-      - {fileID: 0}
-      - {fileID: 0}
-      - {fileID: 0}
+      - {fileID: 21300000, guid: d50f50cf95382844293aa635abc384ee, type: 3}
+      - {fileID: 21300000, guid: 06ddec63d5816ae4e92f2f1dadfc650a, type: 3}
+      - {fileID: 21300000, guid: 088398b87f1234b4c9b7a6978553a7d7, type: 3}
     - sprites:
-      - {fileID: 0}
-      - {fileID: 0}
-      - {fileID: 0}
+      - {fileID: 21300000, guid: 556bc0f9bf7c3dc4281067fa636737be, type: 3}
+      - {fileID: 21300000, guid: 6ab4f881e7d1db4478bba3bd1e837db1, type: 3}
+      - {fileID: 21300000, guid: 44fd91a6cfb917148ac43be2655977db, type: 3}
     - sprites:
-      - {fileID: 0}
-      - {fileID: 0}
-      - {fileID: 0}
+      - {fileID: 21300000, guid: c5d5e0f2dfa20cc4ea6bb71d81107f14, type: 3}
+      - {fileID: 21300000, guid: 66f44724a6590c649ba47808980bd630, type: 3}
+      - {fileID: 21300000, guid: 6fd35557660e6f0408eae37d28229909, type: 3}
     iconeCadeado: {fileID: 1729489056}
   - idFase: Fase3
     nomeDaCena: Fase 3
@@ -2980,17 +2980,17 @@ MonoBehaviour:
     - {fileID: 1350810651}
     spritesEstrelasPorModo:
     - sprites:
-      - {fileID: 0}
-      - {fileID: 0}
-      - {fileID: 0}
+      - {fileID: 21300000, guid: a82f77b8e703499479165168e82df7cf, type: 3}
+      - {fileID: 21300000, guid: 3d0d7468d48e381488b8d75756ab9bdb, type: 3}
+      - {fileID: 21300000, guid: 3d20a13c42552a34ab9976599daa04a5, type: 3}
     - sprites:
-      - {fileID: 0}
-      - {fileID: 0}
-      - {fileID: 0}
+      - {fileID: 21300000, guid: e9b19228e73df0c4ab596bce99350de7, type: 3}
+      - {fileID: 21300000, guid: ec599d342988b2a438af0e79954dfabd, type: 3}
+      - {fileID: 21300000, guid: d5678be2c3e2c8f49bbf963990045bc3, type: 3}
     - sprites:
-      - {fileID: 0}
-      - {fileID: 0}
-      - {fileID: 0}
+      - {fileID: 21300000, guid: 429b8456fd326674b91a72e07115518d, type: 3}
+      - {fileID: 21300000, guid: 65103150bbc23da4e9ffbfe03ff5bc75, type: 3}
+      - {fileID: 21300000, guid: 8e47a06a18a96e84bab88dea4b83c7a0, type: 3}
     iconeCadeado: {fileID: 335949329}
   - idFase: FaseExtra
     nomeDaCena: Fase 4
@@ -3002,17 +3002,17 @@ MonoBehaviour:
     - {fileID: 1552962430}
     spritesEstrelasPorModo:
     - sprites:
-      - {fileID: 0}
-      - {fileID: 0}
-      - {fileID: 0}
+      - {fileID: 21300000, guid: 0c7587107d0974247822a41fcf97638b, type: 3}
+      - {fileID: 21300000, guid: b9aa9aada1df63348ba7726955b214b3, type: 3}
+      - {fileID: 21300000, guid: 9984fbd03342bc342b46db02e653fe64, type: 3}
     - sprites:
-      - {fileID: 0}
-      - {fileID: 0}
-      - {fileID: 0}
+      - {fileID: 21300000, guid: 5183b9f840dfa4c479e04f42f5d97d8f, type: 3}
+      - {fileID: 21300000, guid: 55199a31a93280849a534f59c54d0182, type: 3}
+      - {fileID: 21300000, guid: 2c2e7f45d51790f4d91e3cb270765426, type: 3}
     - sprites:
-      - {fileID: 0}
-      - {fileID: 0}
-      - {fileID: 0}
+      - {fileID: 21300000, guid: 3142dccafb816f948b7701122b25f8cd, type: 3}
+      - {fileID: 21300000, guid: 41d2d54040db1344aad4e2885c7d2755, type: 3}
+      - {fileID: 21300000, guid: 13d9793d25c6e9e4fa13ad89f3a54ad1, type: 3}
     iconeCadeado: {fileID: 1243749224}
   - idFase: AnimacaoFinal
     nomeDaCena: "Anima\xE7\xE3o Final"

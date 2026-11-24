@@ -1190,9 +1190,61 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: fotoDerrota
+      value: 
+      objectReference: {fileID: 21300000, guid: f3bbc7e67e915bb4ca2ec6f7fbfcb89a, type: 3}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: foto1Estrela
+      value: 
+      objectReference: {fileID: 21300000, guid: 5e067e555bfbe4248b8abbb3de0b8c72, type: 3}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: foto2Estrelas
+      value: 
+      objectReference: {fileID: 21300000, guid: 7798f9b21ebeb3843b7d54a9d8a69126, type: 3}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: foto3Estrelas
+      value: 
+      objectReference: {fileID: 21300000, guid: 4211580986f0c594fb0d949b247a5cb0, type: 3}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
       propertyPath: indiceProximaFaseNoMenu
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: fotosPorModo.Array.data[0].foto1Estrela
+      value: 
+      objectReference: {fileID: 21300000, guid: 5e067e555bfbe4248b8abbb3de0b8c72, type: 3}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: fotosPorModo.Array.data[1].foto1Estrela
+      value: 
+      objectReference: {fileID: 21300000, guid: f14c64e7bf36f5a4c9becf64206fac99, type: 3}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: fotosPorModo.Array.data[2].foto1Estrela
+      value: 
+      objectReference: {fileID: 21300000, guid: 9a6d13f19f2a05e48968ca7c328c3cf9, type: 3}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: fotosPorModo.Array.data[0].foto2Estrelas
+      value: 
+      objectReference: {fileID: 21300000, guid: 7798f9b21ebeb3843b7d54a9d8a69126, type: 3}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: fotosPorModo.Array.data[0].foto3Estrelas
+      value: 
+      objectReference: {fileID: 21300000, guid: 4211580986f0c594fb0d949b247a5cb0, type: 3}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: fotosPorModo.Array.data[1].foto2Estrelas
+      value: 
+      objectReference: {fileID: 21300000, guid: cad91a000e580ad4aa41245fb6304dd7, type: 3}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: fotosPorModo.Array.data[1].foto3Estrelas
+      value: 
+      objectReference: {fileID: 21300000, guid: 23ba72fa7a6b6e040be0a370be6c71ab, type: 3}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: fotosPorModo.Array.data[2].foto2Estrelas
+      value: 
+      objectReference: {fileID: 21300000, guid: e9d9b7f24b7e47146a58a4591fc36c46, type: 3}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: fotosPorModo.Array.data[2].foto3Estrelas
+      value: 
+      objectReference: {fileID: 21300000, guid: 6c0afb897e3426e42872a895aa2fe352, type: 3}
     - target: {fileID: 3301791770068668589, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
       propertyPath: m_Pivot.x
       value: 0

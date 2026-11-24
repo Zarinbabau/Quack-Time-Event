@@ -1312,6 +1312,42 @@ PrefabInstance:
       propertyPath: indiceProximaFaseNoMenu
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: fotosPorModo.Array.data[0].foto1Estrela
+      value: 
+      objectReference: {fileID: 21300000, guid: 9fd8a49482688704f92a8ba9217536bf, type: 3}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: fotosPorModo.Array.data[1].foto1Estrela
+      value: 
+      objectReference: {fileID: 21300000, guid: 7d568ef272fa205408530aa3f6d07b60, type: 3}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: fotosPorModo.Array.data[2].foto1Estrela
+      value: 
+      objectReference: {fileID: 21300000, guid: 6cae6c96e34a9bd4382b900d39271fb9, type: 3}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: fotosPorModo.Array.data[0].foto2Estrelas
+      value: 
+      objectReference: {fileID: 21300000, guid: 37d2404ae8997024abc0b42a6caf8105, type: 3}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: fotosPorModo.Array.data[0].foto3Estrelas
+      value: 
+      objectReference: {fileID: 21300000, guid: 42de1aac2f294414e8eb1534f4db35e5, type: 3}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: fotosPorModo.Array.data[1].foto2Estrelas
+      value: 
+      objectReference: {fileID: 21300000, guid: 5c96e30151c86c74da6c6835ef391c7b, type: 3}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: fotosPorModo.Array.data[1].foto3Estrelas
+      value: 
+      objectReference: {fileID: 21300000, guid: 1f5aabfff0552ae47bd6b384149a8c2f, type: 3}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: fotosPorModo.Array.data[2].foto2Estrelas
+      value: 
+      objectReference: {fileID: 21300000, guid: f40c5c01739803a44a67de0f2c6a7b92, type: 3}
+    - target: {fileID: 47864589535152349, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: fotosPorModo.Array.data[2].foto3Estrelas
+      value: 
+      objectReference: {fileID: 21300000, guid: 778237eaca505014483cc3007bc74ee9, type: 3}
     - target: {fileID: 3301791770068668589, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1396,6 +1432,10 @@ PrefabInstance:
       propertyPath: m_Color.a
       value: 0.7019608
       objectReference: {fileID: 0}
+    - target: {fileID: 5056137027993129773, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5400822976001543795, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -1410,7 +1450,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8171966401648143625, guid: d7d24b896b29e614bb41b9a1f2097e70, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
