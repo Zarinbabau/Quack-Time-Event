@@ -726,6 +726,7 @@ MonoBehaviour:
   painelContagem: {fileID: 1861040550}
   txtContagem: {fileID: 993589610}
   somContagem: {fileID: 8300000, guid: cef140f1e1b08a64793d7027993f989e, type: 3}
+  delayAposContagem: 0.5
 --- !u!82 &951493413
 AudioSource:
   m_ObjectHideFlags: 0

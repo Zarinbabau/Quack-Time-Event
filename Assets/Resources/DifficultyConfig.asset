@@ -19,7 +19,7 @@ MonoBehaviour:
       acertosObjetivo: 13
       pontosPara1Estrela: 567
       pontosPara2Estrelas: 850
-      pontosPara3Estrelas: 1700
+      pontosPara3Estrelas: 1650
       tempoParaResponder: 0.7
     fase2:
       acertosObjetivo: 13
@@ -46,56 +46,56 @@ MonoBehaviour:
     maxVidas: 3
     fase1:
       acertosObjetivo: 15
-      pontosPara1Estrela: 570
-      pontosPara2Estrelas: 850
-      pontosPara3Estrelas: 1700
+      pontosPara1Estrela: 600
+      pontosPara2Estrelas: 863
+      pontosPara3Estrelas: 1725
       tempoParaResponder: 0.55
     fase2:
       acertosObjetivo: 15
-      pontosPara1Estrela: 570
-      pontosPara2Estrelas: 850
-      pontosPara3Estrelas: 1700
-      tempoParaResponder: 0.8
+      pontosPara1Estrela: 600
+      pontosPara2Estrelas: 900
+      pontosPara3Estrelas: 1800
+      tempoParaResponder: 0.85
     fase3:
       acertosObjetivo: 15
-      pontosPara1Estrela: 570
-      pontosPara2Estrelas: 850
-      pontosPara3Estrelas: 1700
-      tempoParaResponder: 1.5
+      pontosPara1Estrela: 642
+      pontosPara2Estrelas: 963
+      pontosPara3Estrelas: 1925
+      tempoParaResponder: 1.1
     faseExtra:
       acertosObjetivo: 15
-      pontosPara1Estrela: 570
-      pontosPara2Estrelas: 850
-      pontosPara3Estrelas: 1700
+      pontosPara1Estrela: 642
+      pontosPara2Estrelas: 963
+      pontosPara3Estrelas: 1925
       tempoSimples: 0.55
-      tempoRepeticao: 0.8
-      tempoSequencia: 1.5
+      tempoRepeticao: 0.85
+      tempoSequencia: 1.1
   modoMestre:
     nomeDoModo: PATO PUNK
-    maxVidas: 2
+    maxVidas: 1
     fase1:
       acertosObjetivo: 25
       pontosPara1Estrela: 2500
       pontosPara2Estrelas: 3100
       pontosPara3Estrelas: 3750
-      tempoParaResponder: 0.4
+      tempoParaResponder: 0.45
     fase2:
       acertosObjetivo: 25
       pontosPara1Estrela: 2500
       pontosPara2Estrelas: 3100
       pontosPara3Estrelas: 3750
-      tempoParaResponder: 0.6
+      tempoParaResponder: 0.7
     fase3:
       acertosObjetivo: 25
       pontosPara1Estrela: 2500
       pontosPara2Estrelas: 3100
       pontosPara3Estrelas: 3750
-      tempoParaResponder: 1.2
+      tempoParaResponder: 1
     faseExtra:
       acertosObjetivo: 25
       pontosPara1Estrela: 2500
       pontosPara2Estrelas: 3100
       pontosPara3Estrelas: 3750
       tempoSimples: 0.4
-      tempoRepeticao: 0.6
-      tempoSequencia: 1.2
+      tempoRepeticao: 0.7
+      tempoSequencia: 1

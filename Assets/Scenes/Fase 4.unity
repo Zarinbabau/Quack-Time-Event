@@ -1110,13 +1110,13 @@ MonoBehaviour:
   - {fileID: 508803588}
   - {fileID: 9889338}
   - {fileID: 1546832769}
-  spriteIdle: {fileID: 21300000, guid: f2c051f83324bb848a334901e5a00ef6, type: 3}
-  spriteEsquerda: {fileID: 21300000, guid: a217c5b00c4b32945a4f98cfa88aed62, type: 3}
-  spriteDireita: {fileID: 21300000, guid: 5e61167e3a9c5fd46af9ad96b9ce4b63, type: 3}
-  spriteCima: {fileID: 21300000, guid: bf6e0367b4417f14b917279aea39d3f7, type: 3}
-  spriteBaixo: {fileID: 21300000, guid: 5f2788f619d6a8344a66cff6c7db95e0, type: 3}
-  spriteAcao: {fileID: 21300000, guid: 65a183c99ccdf8c449e6e6b1fe64a32c, type: 3}
-  spriteTriste: {fileID: 21300000, guid: f3fdbdabc8ace704a84d36f6fab5089d, type: 3}
+  spriteIdle: {fileID: 21300000, guid: d9c5d7cb843c5694688970e33fe4b06b, type: 3}
+  spriteEsquerda: {fileID: 21300000, guid: e57e3c83671eda84d9edc23f5af7ac44, type: 3}
+  spriteDireita: {fileID: 21300000, guid: 2083196eb0a18d748a1ae1e1e929e289, type: 3}
+  spriteCima: {fileID: 21300000, guid: 47467832b4676664fac64cac6bf47232, type: 3}
+  spriteBaixo: {fileID: 21300000, guid: efa342f715c28aa4f906227d7e004005, type: 3}
+  spriteAcao: {fileID: 21300000, guid: 119cce07aa783134b8ab25cc1343927d, type: 3}
+  spriteTriste: {fileID: 21300000, guid: 9077fd929b0ddee4ebf9e746a3739ad6, type: 3}
   spriteKeyEsquerda: {fileID: 21300000, guid: 1aeed505bc4322741962e247988895a8, type: 3}
   spriteKeyDireita: {fileID: 21300000, guid: dd90dba22f9dd9545992d3b0c8675f86, type: 3}
   spriteKeyCima: {fileID: 21300000, guid: 32c9988d4a76f914f90208fe827fe0b7, type: 3}
@@ -1162,7 +1162,8 @@ MonoBehaviour:
   errosAtuais: 0
   painelContagem: {fileID: 1887732603}
   txtContagem: {fileID: 1953655246}
-  somContagem: {fileID: 0}
+  somContagem: {fileID: 8300000, guid: cef140f1e1b08a64793d7027993f989e, type: 3}
+  delayAposContagem: 0.5
 --- !u!114 &1589661917
 MonoBehaviour:
   m_ObjectHideFlags: 0

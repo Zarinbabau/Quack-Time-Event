@@ -78,6 +78,8 @@ public class FaseExtraQTEController : MonoBehaviour
     [SerializeField] private TMP_Text txtContagem;
     [Tooltip("Som opcional tocado a cada número (3, 2, 1)")]
     [SerializeField] private AudioClip somContagem;
+    [Tooltip("Tempo de espera em segundos após a contagem antes de aparecer a primeira tecla")]
+    [SerializeField] private float delayAposContagem = 0.6f;
 
     private void Awake()
     {
@@ -116,6 +118,9 @@ public class FaseExtraQTEController : MonoBehaviour
         jogoAtivo = false;
 
         yield return StartCoroutine(ContagemRegressivaRotina());
+
+        if (delayAposContagem > 0f)
+            yield return new WaitForSeconds(delayAposContagem);
 
         jogoAtivo = true;
         StartCoroutine(RotinaQTE());

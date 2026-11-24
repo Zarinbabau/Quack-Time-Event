@@ -42,16 +42,35 @@ public class EndGameUIManager : MonoBehaviour
 
     private List<UnityEngine.UI.Button> botoesAtivos = new List<UnityEngine.UI.Button>();
     private int indexBotaoAtual = 0;
+    private bool painelNovoTrofeuAberto = false;
+    private int frameAberturaTrofeu = -1;
+    private int frameFechamentoTrofeu = -1;
 
     private void Start()
     {
         if (painelFimDeJogo != null) painelFimDeJogo.SetActive(false);
         if (painelNovoTrofeu != null) painelNovoTrofeu.SetActive(false);
+        painelNovoTrofeuAberto = false;
     }
 
     private void Update()
     {
-        if (!painelFimDeJogo.activeSelf || botoesAtivos.Count == 0) return;
+        if (painelFimDeJogo == null || !painelFimDeJogo.activeSelf) return;
+
+        // Se o aviso de novo troféu estiver na tela, bloqueia os botões até o jogador fechar
+        if (painelNovoTrofeuAberto)
+        {
+            if (Time.frameCount > frameAberturaTrofeu &&
+                (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) ||
+                 Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Escape) ||
+                 Input.GetMouseButtonDown(0)))
+            {
+                FecharPainelNovoTrofeu();
+            }
+            return;
+        }
+
+        if (botoesAtivos.Count == 0) return;
 
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
@@ -71,6 +90,7 @@ public class EndGameUIManager : MonoBehaviour
     public void MostrarTela(int estrelas)
     {
         painelFimDeJogo.SetActive(true);
+        painelNovoTrofeuAberto = false;
         if (painelNovoTrofeu != null) painelNovoTrofeu.SetActive(false);
 
         botoesAtivos.Clear();
@@ -100,6 +120,9 @@ public class EndGameUIManager : MonoBehaviour
                 if (painelNovoTrofeu != null)
                 {
                     painelNovoTrofeu.SetActive(true);
+                    painelNovoTrofeuAberto = true;
+                    frameAberturaTrofeu = Time.frameCount;
+
                     if (txtMensagemTrofeu != null) txtMensagemTrofeu.text = msgTrofeu;
 
                     int dif = DifficultyManager.DificuldadeAtual;
@@ -112,6 +135,14 @@ public class EndGameUIManager : MonoBehaviour
         }
 
         ConfigurarEventosMouse();
+        AtualizarFeedbackVisual();
+    }
+
+    public void FecharPainelNovoTrofeu()
+    {
+        if (painelNovoTrofeu != null) painelNovoTrofeu.SetActive(false);
+        painelNovoTrofeuAberto = false;
+        frameFechamentoTrofeu = Time.frameCount;
         AtualizarFeedbackVisual();
     }
 
@@ -129,7 +160,8 @@ public class EndGameUIManager : MonoBehaviour
 
             EventTrigger.Entry hoverEntry = new EventTrigger.Entry();
             hoverEntry.eventID = EventTriggerType.PointerEnter;
-            hoverEntry.callback.AddListener((data) => { 
+            hoverEntry.callback.AddListener((data) => {
+                if (painelNovoTrofeuAberto) return;
                 indexBotaoAtual = indexGatilho; 
                 AtualizarFeedbackVisual(); 
             });
@@ -152,16 +184,27 @@ public class EndGameUIManager : MonoBehaviour
     {
         for (int i = 0; i < botoesAtivos.Count; i++)
         {
-            bool isSelecionado = (i == indexBotaoAtual);
+            bool isSelecionado = !painelNovoTrofeuAberto && (i == indexBotaoAtual);
             botoesAtivos[i].image.color = isSelecionado ? corSelecionado : corNormal;
             botoesAtivos[i].transform.localScale = isSelecionado ? escalaSelecionado : escalaNormal;
         }
     }
 
-    public void VoltarAoMenu() { SceneManager.LoadScene(nomeCenaMenu); }
-    public void RepetirFase() { SceneManager.LoadScene(SceneManager.GetActiveScene().name); }
+    public void VoltarAoMenu()
+    {
+        if (painelNovoTrofeuAberto || Time.frameCount == frameFechamentoTrofeu) return;
+        SceneManager.LoadScene(nomeCenaMenu);
+    }
+
+    public void RepetirFase()
+    {
+        if (painelNovoTrofeuAberto || Time.frameCount == frameFechamentoTrofeu) return;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
     public void ProximaFase()
     {
+        if (painelNovoTrofeuAberto || Time.frameCount == frameFechamentoTrofeu) return;
         PlayerPrefs.SetInt("AutoProgression_ToIndex", indiceProximaFaseNoMenu);
         PlayerPrefs.Save();
         SceneManager.LoadScene(nomeCenaMenu);
