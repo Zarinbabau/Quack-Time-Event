@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 65a183c99ccdf8c449e6e6b1fe64a32c
+guid: d92b71abe590905459350ea0b2be70c2
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -95,7 +95,51 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: FormulaEDuke_0
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 555
+        width: 876
+        height: 1141
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 17ef87a25b905f547805232903a904a8
+      internalID: 928274451
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FormulaEDuke_1
+      rect:
+        serializedVersion: 2
+        x: 2326
+        y: 217
+        width: 1008
+        height: 1604
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 67dfcf9db5883ee4b81bf4960d955071
+      internalID: -1799009614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -109,7 +153,9 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      FormulaEDuke_0: 928274451
+      FormulaEDuke_1: -1799009614
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -244,6 +244,7 @@ public class FaseExtraQTEController : MonoBehaviour
         int toques = 0;
 
         keySpriteRenderers[1].gameObject.SetActive(true);
+        keySpriteRenderers[1].color = Color.white;
         AtualizarSpriteRepeticao(acao, toques);
         
         float tempo = 0f;
@@ -274,6 +275,7 @@ public class FaseExtraQTEController : MonoBehaviour
             seq[i] = (QTEAction)Random.Range(0, 5);
             keySpriteRenderers[i].gameObject.SetActive(true);
             keySpriteRenderers[i].sprite = ObterSpriteTecla(seq[i]);
+            keySpriteRenderers[i].color = Color.white;
         }
         acaoFinal(seq[2]); 
 
@@ -304,7 +306,11 @@ public class FaseExtraQTEController : MonoBehaviour
     {
         foreach (var sr in keySpriteRenderers)
         {
-            if (sr != null) sr.gameObject.SetActive(false);
+            if (sr != null)
+            {
+                sr.color = Color.white;
+                sr.gameObject.SetActive(false);
+            }
         }
     }
 
