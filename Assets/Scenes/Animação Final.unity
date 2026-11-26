@@ -931,6 +931,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6961596058775259417, guid: de72e485639ef154594931628c9c7a77, type: 3}
+      propertyPath: m_Alpha
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8942789572690090326, guid: de72e485639ef154594931628c9c7a77, type: 3}
       propertyPath: m_Name
       value: CanvasAnimacao
