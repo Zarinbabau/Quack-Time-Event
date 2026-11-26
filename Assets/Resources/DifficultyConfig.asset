@@ -49,13 +49,13 @@ MonoBehaviour:
       pontosPara1Estrela: 600
       pontosPara2Estrelas: 863
       pontosPara3Estrelas: 1725
-      tempoParaResponder: 0.55
+      tempoParaResponder: 0.5
     fase2:
       acertosObjetivo: 15
       pontosPara1Estrela: 600
       pontosPara2Estrelas: 900
       pontosPara3Estrelas: 1800
-      tempoParaResponder: 0.85
+      tempoParaResponder: 0.75
     fase3:
       acertosObjetivo: 15
       pontosPara1Estrela: 642
@@ -67,8 +67,8 @@ MonoBehaviour:
       pontosPara1Estrela: 642
       pontosPara2Estrelas: 963
       pontosPara3Estrelas: 1925
-      tempoSimples: 0.55
-      tempoRepeticao: 0.85
+      tempoSimples: 0.5
+      tempoRepeticao: 0.75
       tempoSequencia: 1.1
   modoMestre:
     nomeDoModo: PATO PUNK
@@ -96,6 +96,6 @@ MonoBehaviour:
       pontosPara1Estrela: 2500
       pontosPara2Estrelas: 3100
       pontosPara3Estrelas: 3750
-      tempoSimples: 0.4
+      tempoSimples: 0.45
       tempoRepeticao: 0.7
       tempoSequencia: 1
