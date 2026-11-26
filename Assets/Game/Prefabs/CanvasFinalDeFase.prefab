@@ -164,6 +164,81 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &2151765549597712466
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5889452143806375395}
+  - component: {fileID: 1207701282599029968}
+  - component: {fileID: 8458611087640093765}
+  m_Layer: 5
+  m_Name: FlashCamera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5889452143806375395
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2151765549597712466}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3301791770068668589}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &1207701282599029968
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2151765549597712466}
+  m_CullTransparentMesh: 1
+--- !u!114 &8458611087640093765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2151765549597712466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &2156848639930425455
 GameObject:
   m_ObjectHideFlags: 0
@@ -834,6 +909,7 @@ GameObject:
   - component: {fileID: 9220667491455895121}
   - component: {fileID: 5801260246935627423}
   - component: {fileID: 47864589535152349}
+  - component: {fileID: 404509557474977449}
   m_Layer: 5
   m_Name: CanvasFinalDeFase
   m_TagString: Untagged
@@ -860,6 +936,7 @@ RectTransform:
   - {fileID: 3827348421391306705}
   - {fileID: 3528528386380269331}
   - {fileID: 2453265444780729995}
+  - {fileID: 5889452143806375395}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -944,6 +1021,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EndGameUIManager
   painelFimDeJogo: {fileID: 8171966401648143625}
   fotoResultado: {fileID: 4917385390471556880}
+  imagemFlashCamera: {fileID: 8458611087640093765}
+  duracaoFlash: 0.45
+  audioSourceUI: {fileID: 404509557474977449}
+  somFlashCamera: {fileID: 8300000, guid: b32d324d77e2c454a867ed7076733b1e, type: 3}
+  somVitoria: {fileID: 8300000, guid: 62ef95f395d78a044964ebc5e276ad9b, type: 3}
+  somDerrota: {fileID: 8300000, guid: 4a542fe5a674e274eb16dab76c57e4c6, type: 3}
+  somCliqueBotao: {fileID: 8300000, guid: 1faae4156353ca04d913189d34ea8909, type: 3}
+  atrasoSomResultado: 0.35
+  musicaBackground: {fileID: 0}
+  duracaoFadeMusica: 1.2
   btnMenu: {fileID: 1679203140974446983}
   btnRepetir: {fileID: 4209454970649766856}
   btnProxima: {fileID: 886526825373239324}
@@ -952,9 +1039,16 @@ MonoBehaviour:
   escalaNormal: {x: 3.3, y: 12.2, z: 3.3}
   escalaSelecionado: {x: 3.5, y: 12.4, z: 3.5}
   fotoDerrota: {fileID: 21300000, guid: 8dc8c79bebefe1143a249db193abc3ea, type: 3}
-  foto1Estrela: {fileID: 21300000, guid: 9fd8a49482688704f92a8ba9217536bf, type: 3}
-  foto2Estrelas: {fileID: 21300000, guid: 37d2404ae8997024abc0b42a6caf8105, type: 3}
-  foto3Estrelas: {fileID: 21300000, guid: 42de1aac2f294414e8eb1534f4db35e5, type: 3}
+  fotosPorModo:
+  - foto1Estrela: {fileID: 0}
+    foto2Estrelas: {fileID: 0}
+    foto3Estrelas: {fileID: 0}
+  - foto1Estrela: {fileID: 0}
+    foto2Estrelas: {fileID: 0}
+    foto3Estrelas: {fileID: 0}
+  - foto1Estrela: {fileID: 0}
+    foto2Estrelas: {fileID: 0}
+    foto3Estrelas: {fileID: 0}
   painelNovoTrofeu: {fileID: 5056137027993129773}
   txtMensagemTrofeu: {fileID: 1091915880243428831}
   imgTrofeuConquistado: {fileID: 1483034463493794636}
@@ -964,6 +1058,103 @@ MonoBehaviour:
   - {fileID: 21300000, guid: c00c7483282cc0d4f8efab9a898c9924, type: 3}
   nomeCenaMenu: "Sele\xE7\xE3o de fase"
   indiceProximaFaseNoMenu: 1
+--- !u!82 &404509557474977449
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5764311264485696373}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &6595097606586686166
 GameObject:
   m_ObjectHideFlags: 0

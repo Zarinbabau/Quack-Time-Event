@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,6 +19,26 @@ public class EndGameUIManager : MonoBehaviour
     [Header("Painel Principal")]
     public GameObject painelFimDeJogo;
     public Image fotoResultado;
+
+    [Header("Efeito de Flash de Câmera")]
+    [Tooltip("Imagem branca em tela cheia (acima do painelFimDeJogo) com Raycast Target desmarcado")]
+    public Image imagemFlashCamera;
+    public float duracaoFlash = 0.45f;
+
+    [Header("Áudio da UI e Fim de Fase")]
+    [Tooltip("AudioSource dedicado aos efeitos da UI (não use o mesmo da música de fundo)")]
+    public AudioSource audioSourceUI;
+    public AudioClip somFlashCamera;
+    public AudioClip somVitoria;
+    public AudioClip somDerrota;
+    public AudioClip somCliqueBotao;
+    [Tooltip("Tempo de espera após o flash para tocar o som de vitória ou derrota")]
+    public float atrasoSomResultado = 0.35f;
+
+    [Header("Música de Fundo da Fase")]
+    [Tooltip("Arraste aqui o AudioSource que toca a música de fundo da fase")]
+    public AudioSource musicaBackground;
+    public float duracaoFadeMusica = 1.2f;
 
     [Header("Botões (Ordem da Esquerda para Direita)")]
     public UnityEngine.UI.Button btnMenu;
@@ -50,19 +71,31 @@ public class EndGameUIManager : MonoBehaviour
     private List<UnityEngine.UI.Button> botoesAtivos = new List<UnityEngine.UI.Button>();
     private int indexBotaoAtual = 0;
     private bool painelNovoTrofeuAberto = false;
+    private bool transicionandoCena = false;
     private int frameAberturaTrofeu = -1;
     private int frameFechamentoTrofeu = -1;
 
     private void Start()
     {
+        if (audioSourceUI == null) audioSourceUI = GetComponent<AudioSource>();
         if (painelFimDeJogo != null) painelFimDeJogo.SetActive(false);
         if (painelNovoTrofeu != null) painelNovoTrofeu.SetActive(false);
+
+        if (imagemFlashCamera != null)
+        {
+            Color c = imagemFlashCamera.color;
+            c.a = 0f;
+            imagemFlashCamera.color = c;
+            imagemFlashCamera.raycastTarget = false;
+            imagemFlashCamera.gameObject.SetActive(false);
+        }
+
         painelNovoTrofeuAberto = false;
     }
 
     private void Update()
     {
-        if (painelFimDeJogo == null || !painelFimDeJogo.activeSelf) return;
+        if (painelFimDeJogo == null || !painelFimDeJogo.activeSelf || transicionandoCena) return;
 
         // Se o aviso de novo troféu estiver na tela, bloqueia os botões até o jogador fechar
         if (painelNovoTrofeuAberto)
@@ -96,6 +129,25 @@ public class EndGameUIManager : MonoBehaviour
 
     public void MostrarTela(int estrelas)
     {
+        // Inicia a redução gradual da música de fundo via MusicManager
+        if (MusicManager.Instance != null)
+        {
+            MusicManager.Instance.PararMusicaComFade(duracaoFadeMusica);
+        }
+        else if (musicaBackground != null && musicaBackground.isPlaying)
+        {
+            StartCoroutine(DiminuirMusicaFundoRotina());
+        }
+
+        TocarSomUI(somFlashCamera);
+    if (imagemFlashCamera != null)
+    {
+        StartCoroutine(EfeitoFlashCameraRotina());
+    }
+    
+        // Toca o som de vitória ou derrota logo após o flash
+        StartCoroutine(TocarSomResultadoComAtraso(estrelas > 0));
+
         painelFimDeJogo.SetActive(true);
         painelNovoTrofeuAberto = false;
         if (painelNovoTrofeu != null) painelNovoTrofeu.SetActive(false);
@@ -147,6 +199,61 @@ public class EndGameUIManager : MonoBehaviour
         AtualizarFeedbackVisual();
     }
 
+    private IEnumerator EfeitoFlashCameraRotina()
+    {
+        imagemFlashCamera.gameObject.SetActive(true);
+        Color cor = imagemFlashCamera.color;
+        cor.a = 1f;
+        imagemFlashCamera.color = cor;
+
+        float tempo = 0f;
+        while (tempo < duracaoFlash)
+        {
+            tempo += Time.unscaledDeltaTime;
+            cor.a = Mathf.Lerp(1f, 0f, tempo / duracaoFlash);
+            imagemFlashCamera.color = cor;
+            yield return null;
+        }
+
+        cor.a = 0f;
+        imagemFlashCamera.color = cor;
+        imagemFlashCamera.gameObject.SetActive(false);
+    }
+
+    private IEnumerator TocarSomResultadoComAtraso(bool venceu)
+    {
+        if (atrasoSomResultado > 0f)
+        {
+            yield return new WaitForSecondsRealtime(atrasoSomResultado);
+        }
+
+        TocarSomUI(venceu ? somVitoria : somDerrota);
+    }
+
+    private IEnumerator DiminuirMusicaFundoRotina()
+    {
+        float volumeInicial = musicaBackground.volume;
+        float tempo = 0f;
+
+        while (tempo < duracaoFadeMusica)
+        {
+            tempo += Time.unscaledDeltaTime;
+            musicaBackground.volume = Mathf.Lerp(volumeInicial, 0f, tempo / duracaoFadeMusica);
+            yield return null;
+        }
+
+        musicaBackground.volume = 0f;
+        musicaBackground.Stop();
+    }
+
+    private void TocarSomUI(AudioClip clip)
+    {
+        if (audioSourceUI != null && clip != null)
+        {
+            audioSourceUI.PlayOneShot(clip);
+        }
+    }
+
     private Sprite ObterSpriteVitoria(int estrelas)
     {
         if (fotosPorModo == null || fotosPorModo.Length == 0) return null;
@@ -154,7 +261,6 @@ public class EndGameUIManager : MonoBehaviour
         int dif = Mathf.Clamp(DifficultyManager.DificuldadeAtual, 0, fotosPorModo.Length - 1);
         Sprite spriteEscolhido = ExtrairSpritePorEstrelas(fotosPorModo[dif], estrelas);
 
-        // Fallback para o Modo Básico [0] caso os modos 1 ou 2 ainda estejam sem arte atribuída
         if (spriteEscolhido == null && dif != 0)
         {
             spriteEscolhido = ExtrairSpritePorEstrelas(fotosPorModo[0], estrelas);
@@ -174,6 +280,7 @@ public class EndGameUIManager : MonoBehaviour
 
     public void FecharPainelNovoTrofeu()
     {
+        TocarSomUI(somCliqueBotao);
         if (painelNovoTrofeu != null) painelNovoTrofeu.SetActive(false);
         painelNovoTrofeuAberto = false;
         frameFechamentoTrofeu = Time.frameCount;
@@ -195,7 +302,7 @@ public class EndGameUIManager : MonoBehaviour
             EventTrigger.Entry hoverEntry = new EventTrigger.Entry();
             hoverEntry.eventID = EventTriggerType.PointerEnter;
             hoverEntry.callback.AddListener((data) => {
-                if (painelNovoTrofeuAberto) return;
+                if (painelNovoTrofeuAberto || transicionandoCena) return;
                 indexBotaoAtual = indexGatilho; 
                 AtualizarFeedbackVisual(); 
             });
@@ -226,21 +333,32 @@ public class EndGameUIManager : MonoBehaviour
 
     public void VoltarAoMenu()
     {
-        if (painelNovoTrofeuAberto || Time.frameCount == frameFechamentoTrofeu) return;
-        SceneManager.LoadScene(nomeCenaMenu);
+        if (painelNovoTrofeuAberto || transicionandoCena || Time.frameCount == frameFechamentoTrofeu) return;
+        StartCoroutine(TocarSomECarregarCena(nomeCenaMenu));
     }
 
     public void RepetirFase()
     {
-        if (painelNovoTrofeuAberto || Time.frameCount == frameFechamentoTrofeu) return;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        if (painelNovoTrofeuAberto || transicionandoCena || Time.frameCount == frameFechamentoTrofeu) return;
+        StartCoroutine(TocarSomECarregarCena(SceneManager.GetActiveScene().name));
     }
 
     public void ProximaFase()
     {
-        if (painelNovoTrofeuAberto || Time.frameCount == frameFechamentoTrofeu) return;
+        if (painelNovoTrofeuAberto || transicionandoCena || Time.frameCount == frameFechamentoTrofeu) return;
         PlayerPrefs.SetInt("AutoProgression_ToIndex", indiceProximaFaseNoMenu);
         PlayerPrefs.Save();
-        SceneManager.LoadScene(nomeCenaMenu);
+        StartCoroutine(TocarSomECarregarCena(nomeCenaMenu));
+    }
+
+    private IEnumerator TocarSomECarregarCena(string nomeCena)
+    {
+        transicionandoCena = true;
+        TocarSomUI(somCliqueBotao);
+
+        // Pequena pausa para o som do clique tocar antes de a cena ser destruída
+        yield return new WaitForSecondsRealtime(0.18f);
+
+        SceneManager.LoadScene(nomeCena);
     }
 }

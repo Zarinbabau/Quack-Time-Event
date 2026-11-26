@@ -1290,9 +1290,9 @@ MonoBehaviour:
   spriteVidaPerdida: {fileID: 21300000, guid: 680dbc0f5669e6b4d8fee442063886aa, type: 3}
   soundCliqueProgresso: {fileID: 8300000, guid: 36b3b2e86f45c6643865ecc7c6ed784e, type: 3}
   soundsAcerto:
-  - {fileID: 8300000, guid: c21e0cf57b0c6304197d2feccf4e453c, type: 3}
-  - {fileID: 8300000, guid: c7a2ad68dd7373e48b0a9951369cee2a, type: 3}
-  - {fileID: 8300000, guid: 80c747b47b00c0447a621006d7dda230, type: 3}
+  - {fileID: 8300000, guid: ffe58a9564ce2004d90b8a94e45d494d, type: 3}
+  - {fileID: 8300000, guid: 2e9bb4541d147e245aa862a966bdcac7, type: 3}
+  - {fileID: 8300000, guid: 780837780b74273439616f21734e0d70, type: 3}
   soundErro: {fileID: 8300000, guid: ae6d3de0d584a2e4f96c4198949a2e6c, type: 3}
   tempoSimples: 0.7
   tempoRepeticao: 1.2

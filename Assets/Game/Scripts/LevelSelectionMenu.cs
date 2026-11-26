@@ -52,6 +52,13 @@ public class LevelSelectionMenu : MonoBehaviour
     public float zoomOffsetZ = -1.5f;
     public float velocidadeZoom = 2f;
 
+    [Header("Configuração de Áudio")]
+    public AudioSource audioSource;
+    [Tooltip("Som ao passar o mouse ou navegar com as setas entre as fases")]
+    public AudioClip somNavegarFase;
+    [Tooltip("Som ao confirmar e entrar na fase selecionada")]
+    public AudioClip somConfirmarFase;
+
     [Header("Seletor de Dificuldade")]
     public TMP_Text txtDificuldadeAtual;
     public UnityEngine.UI.Button btnDificuldadeAnterior;
@@ -77,6 +84,7 @@ public class LevelSelectionMenu : MonoBehaviour
     private void Start()
     {
         if (mainCamera == null) mainCamera = Camera.main;
+        if (audioSource == null) audioSource = GetComponent<AudioSource>();
         
         if (painelBloqueado != null) 
             painelBloqueado.SetActive(false);
@@ -198,7 +206,6 @@ public class LevelSelectionMenu : MonoBehaviour
 
         foreach (var fase in fases)
         {
-            // Se for uma animação (sem ícones de estrelas), pula esta etapa
             if (fase.iconesEstrelas == null || fase.iconesEstrelas.Length == 0) continue;
 
             int estrelasGanhas = DifficultyManager.ObterEstrelasFase(fase.idFase);
@@ -326,7 +333,7 @@ public class LevelSelectionMenu : MonoBehaviour
     {
         if (painelBloqueadoAberto)
         {
-            if (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Space)  || 
+            if (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Space) || 
                 Input.GetMouseButtonDown(0)) 
             {
                 FecharPainelBloqueado();
@@ -409,6 +416,7 @@ public class LevelSelectionMenu : MonoBehaviour
                     {
                         currentIndex = i;
                         AtualizarSelecaoVisual();
+                        TocarSom(somNavegarFase);
                     }
                     break;
                 }
@@ -418,10 +426,12 @@ public class LevelSelectionMenu : MonoBehaviour
 
     private void MudarSelecao(int direcao)
     {
-        currentIndex += direcao;
-        if (currentIndex < 0) currentIndex = 0;
-        if (currentIndex >= fases.Length) currentIndex = fases.Length - 1;
+        int novoIndex = Mathf.Clamp(currentIndex + direcao, 0, fases.Length - 1);
+        if (novoIndex == currentIndex) return;
+
+        currentIndex = novoIndex;
         AtualizarSelecaoVisual();
+        TocarSom(somNavegarFase);
     }
 
     private void AtualizarSelecaoVisual()
@@ -446,8 +456,17 @@ public class LevelSelectionMenu : MonoBehaviour
         }
 
         inputsBloqueados = true;
+        TocarSom(somConfirmarFase);
         StartCoroutine(ZoomCameraRotina());
         return true;
+    }
+
+    private void TocarSom(AudioClip clip)
+    {
+        if (audioSource != null && clip != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
     }
 
     private void ExibirAvisoBloqueio(string mensagem)
